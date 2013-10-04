@@ -10,6 +10,10 @@ define("REP_POS_OFFSET", 21);
 
 $url = "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=60&st=";
 
+$page = file_get_contents($url . "0");
+//$page = $page . file_get_contents($url . "60");
+//$page = $page . file_get_contents($url . "120");
+
 /* THESE ARE COMMENTED ONLY BECAUSE I DIDN'T NEED THEM FOR MY USER. IF IT CAN'T FIND YOUR USERNAME.
 
    UNCOMMENT THE ABOVE TO LINES TO INCREASE THE SEARCH AREA. */
