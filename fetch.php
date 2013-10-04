@@ -1,23 +1,28 @@
 <?php
 # Base URL
-define(URL, "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
+define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
 # Number of pages to extract
-define(PAGES, 3);
+define("PAGES", 10);
 # Minimum post count
-define(MIN_POST, 100);
+define("MIN_POST", 100);
 # Minimum reputation
-define(MIN_REP, 10);
+define("MIN_REP", 10);
 # Sort data by (username, score, post, rep, join, ppd)
-define(SORT, "score");
+define("SORT", "score");
 # Reverse results?
-define(REVERSE, false);
+define("REVERSE", false);
+
+# Database info
+$db[name] = "code_wdr";
+$db[user] = "wdr";
+$db[pass] = "totallynotmyactualpassword:)!";
 
 echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
 echo "Total expected results: \t" . PAGES*20 . "\n";
 echo "Minimum required posts: \t" . MIN_POST . "\n";
 echo "Minimum required reputation: \t" . MIN_REP . "\n";
-echo "Sorting algorithm: \t\t" . SORT . "\n";
+echo "Sorting by: \t\t\t" . SORT . "\n";
 echo "Reverse sorting: \t\t" . (int)REVERSE . "\n";
 sleep(1);
 
@@ -145,39 +150,36 @@ function extractData($data, $search) {
 }
 
 // Function I found online
-function findall($needle, $haystack) 
-{ 
-    //Setting up 
-    $buffer=''; //We will use a 'frameshift' buffer for this search 
-    $pos=0; //Pointer 
-    $end = strlen($haystack); //The end of the string 
-    $getchar=''; //The next character in the string 
-    $needlelen=strlen($needle); //The length of the needle to find (speeds up searching) 
-    $found = array(); //The array we will store results in 
+// Rewrote it to look nicer (so many comments in the last version!)
+function findall($needle, $haystack) { 
+    $buffer = '';
+    $pos = 0;
+    $end = strlen($haystack);
+    $getchar = '';
+    $needlelen = strlen($needle); 
+    $found = array();
     
-    while($pos<$end)//Scan file 
-    { 
-        $getchar = substr($haystack,$pos,1); //Grab next character from pointer 
-        if($getchar!="\\n" || buffer<$needlelen) //If we fetched a line break, or the buffer is still smaller than the needle, ignore and grab next character 
-        { 
-            $buffer = $buffer . $getchar; //Build frameshift buffer 
-            if(strlen($buffer)>$needlelen) //If the buffer is longer than the needle 
-            { 
-                $buffer = substr($buffer,-$needlelen);//Truncunate backwards to needle length (backwards so that the frame 'moves') 
-            } 
-            if($buffer==$needle) //If the buffer matches the needle 
-            { 
-                $found[]=$pos-$needlelen+1; //Add the location of the needle to the array. Adding one fixes the offset. 
+    while ($pos < $end) { 
+        $getchar = substr($haystack, $pos, 1);
+        if ($getchar != "\\n" || $buffer < $needlelen) { 
+            $buffer = $buffer . $getchar;
+            if (strlen($buffer) > $needlelen) { 
+                $buffer = substr($buffer, -$needlelen);
+            }
+            if ($buffer == $needle) { 
+                $found[] = $pos - $needlelen + 1;
             } 
         } 
-        $pos++; //Increment the pointer 
+        $pos++;
     } 
-    if(array_key_exists(0,$found)) //Check for an empty array 
-    { 
-        return $found; //Return the array of located positions 
+    if (array_key_exists(0, $found)) { 
+        return $found;
+    } else { 
+        return false;
     } 
-    else 
-    { 
-        return false; //Or if no instances were found return false 
-    } 
+}
+
+function database() {
+    $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $db[name], $db[user], $db[pass]);
+    return $db;
 }
