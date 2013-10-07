@@ -14,11 +14,6 @@ define("SORT", "score");
 # Reverse results?
 define("REVERSE", false);
 
-# Database info
-$db[name] = "code_wdr";
-$db[user] = "wdr";
-$db[pass] = "totallynotmyactualpassword:)!";
-
 echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
 echo "Total expected results: \t" . PAGES*20 . "\n";
@@ -94,7 +89,7 @@ for ($a = 0; $a < (20*PAGES); $a++) {
 	$total_members++;
 }
 
-// Output results
+// Output results and insert/update database
 echo "\nThe top " . $total_members . " most helpful members of webdevRefinery are:\n\n";
 echo "      Username		Score		Posts		        Reputation	Join Date		PPD\n";
 echo "------------------------------------------------------------------------------------------------------------\n";
@@ -114,5 +109,13 @@ for ($a = 0; $a < (20*PAGES); $a++) {
 	}
 
 	echo str_pad(++$rank, 4, "#000", STR_PAD_LEFT) . ": " . $results[$a][username] . $name . "\t" . round($results[$a][score], 2) . "\t\t" . $results[$a][post] . "\t\t" . $results[$a][rep] . "\t\t" . date("m-d-Y", $results[$a][join]) . "\t\t" . round($results[$a][post]/((time()-$results[$a][join])/86400), 2) . "\n";
+
+	if (!userExists($results[$a][username])) {
+		// Add user
+		addUser($results[$a][username], round($results[$a][score], 2), $results[$a][post], $results[$a][rep], $results[$a][join], round($results[$a][post]/((time()-$results[$a][join])/86400), 2));
+	} else {
+		// Update user
+		updateUser($results[$a][username], round($results[$a][score], 2), $results[$a][post], $results[$a][rep], $results[$a][join], round($results[$a][post]/((time()-$results[$a][join])/86400), 2));
+	}
 }
 ?>
