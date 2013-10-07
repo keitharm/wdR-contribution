@@ -32,6 +32,7 @@ $reps = array();
 $names = array();
 $posts = array();
 $joins = array();
+$avatars = array();
 
 $scores = array();
 $results = array();
@@ -45,11 +46,13 @@ for ($a = 0; $a < PAGES; $a++) {
 	$names_tmp = extractData($data, "View Profile'>", "</a>");
 	$posts_tmp = extractData($data, "</span><span class='left'>", "</span>");
 	$joins_tmp = extractData($data, "Joined:</span> ", "</span>");
+	$avatars_tmp = extractData($data, "class='ipsUserPhotoLink left'><img src='", "' alt=");
 
 	$reps = array_merge($reps, $reps_tmp);
 	$names = array_merge($names, $names_tmp);
 	$posts = array_merge($posts, $posts_tmp);
 	$joins = array_merge($joins, $joins_tmp);
+	$avatars = array_merge($avatars, $avatars_tmp);
     echo "Fetched " . ($a+1)*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
 }
 
@@ -72,6 +75,7 @@ for ($a = 0; $a < (20*PAGES); $a++) {
 	$results[$a][post] = $posts[$a];
 	$results[$a][rep] = $reps[$a];
 	$results[$a][join] = $joins[$a];
+	$results[$a][avatar] = $avatars[$a];
 }
 
 // Sort by score
@@ -111,3 +115,4 @@ for ($a = 0; $a < (20*PAGES); $a++) {
 
 	echo str_pad(++$rank, 4, "#000", STR_PAD_LEFT) . ": " . $results[$a][username] . $name . "\t" . round($results[$a][score], 2) . "\t\t" . $results[$a][post] . "\t\t" . $results[$a][rep] . "\t\t" . date("m-d-Y", $results[$a][join]) . "\t\t" . round($results[$a][post]/((time()-$results[$a][join])/86400), 2) . "\n";
 }
+?>
