@@ -1,4 +1,6 @@
 <?php
+require_once 'functions.php';
+
 # Base URL
 define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
 # Number of pages to extract
@@ -39,10 +41,10 @@ echo "\nFetching data from wdR...\n";
 for ($a = 0; $a < PAGES; $a++) {
 	$data = file_get_contents(URL . $a*20);
 
-	$reps_tmp  = extractData($data, "<span class='number'>");
-	$names_tmp = extractData($data, "View Profile'>");
-	$posts_tmp = extractData($data, "</span><span class='left'>");
-	$joins_tmp = extractData($data, "Joined:</span> ");
+	$reps_tmp  = extractData($data, "<span class='number'>", "</span>");
+	$names_tmp = extractData($data, "View Profile'>", "</a>");
+	$posts_tmp = extractData($data, "</span><span class='left'>", "</span>");
+	$joins_tmp = extractData($data, "Joined:</span> ", "</span>");
 
 	$reps = array_merge($reps, $reps_tmp);
 	$names = array_merge($names, $names_tmp);
@@ -108,78 +110,4 @@ for ($a = 0; $a < (20*PAGES); $a++) {
 	}
 
 	echo str_pad(++$rank, 4, "#000", STR_PAD_LEFT) . ": " . $results[$a][username] . $name . "\t" . round($results[$a][score], 2) . "\t\t" . $results[$a][post] . "\t\t" . $results[$a][rep] . "\t\t" . date("m-d-Y", $results[$a][join]) . "\t\t" . round($results[$a][post]/((time()-$results[$a][join])/86400), 2) . "\n";
-}
-
-// Sorting functions//
-function sort_by_username($a, $b) {
-    return strcmp($a["username"], $b["username"]);
-}
-
-function sort_by_score($a, $b) {
-    return ($b[score]*100) - ($a[score]*100);
-}
-
-function sort_by_post($a, $b) {
-    return ($b[post]) - ($a[post]);
-}
-
-function sort_by_rep($a, $b) {
-    return ($b[rep]) - ($a[rep]);
-}
-
-function sort_by_join($a, $b) {
-    return ($a[join]) - ($b[join]);
-}
-
-function sort_by_ppd($a, $b) {
-    return (round($b[post]/((time()-$b[join])/86400), 2)*100) - (round($a[post]/((time()-$a[join])/86400), 2)*100);
-}
-//////////////////////
-
-function extractData($data, $search) {
-	$matches = findall($search, $data);
-	foreach ($matches as &$val) {
-		$offset = 0;
-		$val += strlen($search);
-		while ($data[$val+$offset] != "<") {
-			$offset++;
-		}
-		$val = substr($data, $val, $offset);
-	}
-	return $matches;
-}
-
-// Function I found online
-// Rewrote it to look nicer (so many comments in the last version!)
-function findall($needle, $haystack) { 
-    $buffer = '';
-    $pos = 0;
-    $end = strlen($haystack);
-    $getchar = '';
-    $needlelen = strlen($needle); 
-    $found = array();
-    
-    while ($pos < $end) { 
-        $getchar = substr($haystack, $pos, 1);
-        if ($getchar != "\\n" || $buffer < $needlelen) { 
-            $buffer = $buffer . $getchar;
-            if (strlen($buffer) > $needlelen) { 
-                $buffer = substr($buffer, -$needlelen);
-            }
-            if ($buffer == $needle) { 
-                $found[] = $pos - $needlelen + 1;
-            } 
-        } 
-        $pos++;
-    } 
-    if (array_key_exists(0, $found)) { 
-        return $found;
-    } else { 
-        return false;
-    } 
-}
-
-function database() {
-    $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $db[name], $db[user], $db[pass]);
-    return $db;
 }
