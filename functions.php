@@ -30,7 +30,7 @@ function sort_by_ppd($a, $b) {
 }
 //////////////////////
 
-function extractData($data, $search, $ending) {
+function extractData($data, $search, $ending, $specific = -1) {
 	$matches = findall($search, $data);
 	foreach ($matches as &$val) {
 		$offset = 0;
@@ -40,7 +40,17 @@ function extractData($data, $search, $ending) {
         }
 		$val = substr($data, $val, $offset);
 	}
-	return $matches;
+    if ($matches == false) {
+        return "Error, no matches found.";
+    }
+
+    if ($specific == -1) {
+        if (count($matches) == 1) {
+            return $matches[0];
+        }
+	    return $matches;
+    }
+    return $matches[$specific-1];
 }
 
 // Function I found online
@@ -110,5 +120,36 @@ function updateUser($username, $score, $posts, $reputation, $joindate, $ppd) {
     $db = database();
     $statement = $db->prepare("UPDATE `users` SET `score` = ?, `posts` = ?, `reputation` = ?, `joindate` = ?, `ppd` = ? WHERE `username` = ?");
     $statement->execute(array($score, $posts, $reputation, $joindate, $ppd, $username));
+}
+
+function addURLUser($username, $url) {
+    $db = database();
+    $statement = $db->prepare("INSERT INTO `users` (`username`, `url`) VALUES (?, ?)");
+    $statement->execute(array($username, $url));
+}
+
+function updateURLUser($username, $url) {
+    $db = database();
+    $statement = $db->prepare("UPDATE `users` SET `url` = ? WHERE `username` = ?");
+    $statement->execute(array($url, $username));
+}
+
+// LOL!
+function searchForWordsInString($data, $values) {
+    $found = array();
+    foreach($values as $val) {
+        if (strpos($data, $val) !== false) {
+            $found[] = $val;
+        }
+    }
+
+    if (count($found) == 0) {
+        return "No Matches Found";
+    }
+    else if (count($found) == 1) {
+        return $found[0];
+    } else {
+        return "Multiple Matches Found";
+    }
 }
 ?>
