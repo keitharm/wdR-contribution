@@ -110,16 +110,16 @@ function getUserData($username) {
     return $info;
 }
 
-function addUser($username, $score, $posts, $reputation, $joindate, $ppd) {
+function addUser($username, $score, $posts, $reputation, $joindate, $ppd, $url) {
     $db = database();
-    $statement = $db->prepare("INSERT INTO `users` (`username`, `score`, `posts`, `reputation`, `joindate`, `ppd`) VALUES (?, ?, ?, ?, ?, ?)");
-    $statement->execute(array($username, $score, $posts, $reputation, $joindate, $ppd));
+    $statement = $db->prepare("INSERT INTO `users` (`username`, `score`, `posts`, `reputation`, `joindate`, `ppd`, `url`) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $statement->execute(array($username, $score, $posts, $reputation, $joindate, $ppd, $url));
 }
 
-function updateUser($username, $score, $posts, $reputation, $joindate, $ppd) {
+function updateUser($username, $score, $posts, $reputation, $joindate, $ppd, $url) {
     $db = database();
-    $statement = $db->prepare("UPDATE `users` SET `score` = ?, `posts` = ?, `reputation` = ?, `joindate` = ?, `ppd` = ? WHERE `username` = ?");
-    $statement->execute(array($score, $posts, $reputation, $joindate, $ppd, $username));
+    $statement = $db->prepare("UPDATE `users` SET `score` = ?, `posts` = ?, `reputation` = ?, `joindate` = ?, `ppd` = ?, `url` = ? WHERE `username` = ?");
+    $statement->execute(array($score, $posts, $reputation, $joindate, $ppd, $url, $username));
 }
 
 function addURLUser($username, $url) {
