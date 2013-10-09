@@ -22,6 +22,7 @@ $names = array();
 $posts = array();
 $joins = array();
 $urls = array();
+$avatars = array();
 
 $scores = array();
 $results = array();
@@ -35,14 +36,15 @@ for ($a = 0; $a < PAGES; $a++) {
 	$names_tmp = extractData($data, "View Profile'>", "</a>");
 	$posts_tmp = extractData($data, "</span><span class='left'>", "</span>");
 	$joins_tmp = extractData($data, "Joined:</span> ", "</span>");
-
+	$avatars_tmp = extractData($data, "left'><img src='", "' alt=");
 	$urls_tmp = extractData($data, "<strong><a href='", "' title='View Profile'>");
-	$urls = array_merge($urls, $urls_tmp);
 
 	$reps = array_merge($reps, $reps_tmp);
 	$names = array_merge($names, $names_tmp);
 	$posts = array_merge($posts, $posts_tmp);
 	$joins = array_merge($joins, $joins_tmp);
+	$avatars = array_merge($avatars, $avatars_tmp);
+	$urls = array_merge($urls, $urls_tmp);
     echo "Fetched " . ($a+1)*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
 }
 
@@ -66,6 +68,7 @@ for ($a = 0; $a < (20*PAGES); $a++) {
 	$results[$a][rep] = $reps[$a];
 	$results[$a][join] = $joins[$a];
 	$results[$a][url] = $urls[$a];
+	$results[$a][avatar] = $avatars[$a];
 }
 
 // Sort by score
@@ -79,10 +82,10 @@ $rank = 0;
 for ($a = 0; $a < (20*PAGES); $a++) {
 	if (!userExists($results[$a][username])) {
 		// Add user
-		addUser($results[$a][username], round($results[$a][score], 2), $results[$a][post], $results[$a][rep], $results[$a][join], round($results[$a][post]/((time()-$results[$a][join])/86400), 2), $results[$a][url]);
+		addUser($results[$a][username], round($results[$a][score], 2), $results[$a][post], $results[$a][rep], $results[$a][join], round($results[$a][post]/((time()-$results[$a][join])/86400), 2), $results[$a][url], $results[$a][avatar]);
 	} else {
 		// Update user
-		updateUser($results[$a][username], round($results[$a][score], 2), $results[$a][post], $results[$a][rep], $results[$a][join], round($results[$a][post]/((time()-$results[$a][join])/86400), 2), $results[$a][url]);
+		updateUser($results[$a][username], round($results[$a][score], 2), $results[$a][post], $results[$a][rep], $results[$a][join], round($results[$a][post]/((time()-$results[$a][join])/86400), 2), $results[$a][url], $results[$a][avatar]);
 	}
 }
 ?>
