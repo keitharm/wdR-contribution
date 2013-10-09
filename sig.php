@@ -6,8 +6,6 @@ require_once("functions.php");
 // Username to fetch
 define("USERNAME", "TheMaster");
 
-// Critical value based on web templated being fetched from
-
 $userData = getUserData(USERNAME);
 
 $RepPerDay = (($userData->reputation) / (date() - $userData->joindate)) / 86400;
