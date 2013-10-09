@@ -1,10 +1,15 @@
 <?php
-# Database info
-$config[name] = "code_wdr";
-$config[user] = "code_wdr";
-$config[pass] = "totallynotmyactualpassword:)!";
+// Configuration values for DB connection
+require_once 'config.php';
 
-// Sorting functions//
+// All Functions below this line //
+function database() {
+    global $config;
+    $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config[db][dbname], $config[db][username], $config[db][password]);
+    return $db;
+}
+
+// Sorting functions
 function sort_by_username($a, $b) {
     return strcmp($a["username"], $b["username"]);
 }
@@ -83,12 +88,6 @@ function findall($needle, $haystack) {
     } 
 }
 
-function database() {
-    global $config;
-    $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config[name], $config[user], $config[pass]);
-    return $db;
-}
-
 function userExists($username) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM users WHERE `username` = ?");
@@ -120,18 +119,6 @@ function updateUser($username, $score, $posts, $reputation, $joindate, $ppd, $ur
     $db = database();
     $statement = $db->prepare("UPDATE `users` SET `score` = ?, `posts` = ?, `reputation` = ?, `joindate` = ?, `ppd` = ?, `url` = ?, `avatar` = ? WHERE `username` = ?");
     $statement->execute(array($score, $posts, $reputation, $joindate, $ppd, $url, $avatar, $username));
-}
-
-function addURLUser($username, $url) {
-    $db = database();
-    $statement = $db->prepare("INSERT INTO `users` (`username`, `url`) VALUES (?, ?)");
-    $statement->execute(array($username, $url));
-}
-
-function updateURLUser($username, $url) {
-    $db = database();
-    $statement = $db->prepare("UPDATE `users` SET `url` = ? WHERE `username` = ?");
-    $statement->execute(array($url, $username));
 }
 
 // LOL!
