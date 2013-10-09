@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 require_once 'functions.php';
 
 # Base URL
@@ -58,6 +59,16 @@ for ($a = 0; $a < (20*PAGES); $a++) {
 	 $scores[] = ($reps[$a]*($posts[$a]/((time()-$joins[$a])/86400)));
 	// Old algorithm
 	//$scores[] = round(($reps[$a]/$posts[$a])*100, 2);
+}
+
+// Fix for Avatars
+foreach ($avatars as &$image) {
+	if (strpos($image, "gravatar.com") !== false) {
+		$image = substr($image, 0, 69);
+		if (file_get_contents($image) == file_get_contents("default.jpg")) {
+			$image = "http://i2.wp.com/webdevrefinery.com/forums/public/style_images/Cielo/profile/default_large.png";
+		}
+	}
 }
 
 // Combine into nice multidimensional array for sorting
