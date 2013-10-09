@@ -1,4 +1,8 @@
 <?php
+// OLD! This script will only
+// output results while updatedb.php
+// will fetch all results and necessary
+// fields and store them in the database.
 require_once 'functions.php';
 
 # Base URL
