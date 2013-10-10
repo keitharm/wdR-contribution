@@ -1,11 +1,11 @@
 <?php
 // Configuration values for DB connection
-require_once 'config.php';
+require_once('config.php');
 
 // All Functions below this line //
 function database() {
     global $config;
-    $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config[db][dbname], $config[db][username], $config[db][password]);
+    $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config['db']['dbname'], $config['db']['username'], $config['db']['password']);
     return $db;
 }
 
@@ -183,6 +183,17 @@ function userStats($username) {
         $data["Birthday"] = $data["Age"];
         $data["Age"] = "Unknown";
     }
+    return $data;
+}
+
+function getUserOnlineState($username) {
+    $info = getUserData($username);
+
+    # User's profile URL
+    $url = file_get_contents($info->url);
+
+    $data = array("Status" => searchForWordsInString(extractData($url, "<span class='ipsBadge", "</span>"), array("Online", "Offline")));
+
     return $data;
 }
 ?>
