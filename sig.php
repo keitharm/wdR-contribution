@@ -1,17 +1,16 @@
 <?php
-
-header('Content-Type: image/png');
 require_once("functions.php");
+header('Content-Type: image/png');
 
 // Username to fetch
-define("USERNAME", "TheMaster");
+define("USERNAME", $_GET['user']);
 
 $userData = getUserData(USERNAME);
 
-$RepPerDay = (($userData->reputation) / (date() - $userData->joindate)) / 86400;
+$RepPerDay = round(($userData->reputation) / floor((time() - $userData->joindate) / 86400), 3);
 
 // Creating the string to be written to the signature image
-$string = USERNAME . " has " . $RepAmount . " rep points. That's " . $RepPerDay . " rep per day!";
+$string = USERNAME . " has " . $userData->reputation . " rep points. That's " . $RepPerDay . " rep per day!" . $userStats[Status];
 
 $im = imagecreate(800, 110);
 $background_color = imagecolorallocate($im, 248, 248, 248);
@@ -20,7 +19,7 @@ imagestring($im, 15, 110, 50, $string, $text_color);
 
 
 // Overlaying the previously generated text only signature, with the user's avatar
-$avatar = imagecreatefromstring($userData->avatar);
+$avatar = imagecreatefromstring(file_get_contents($userData->avatar));
 $size = getimagesize($userData->avatar);
 imagecopy($im, $avatar, (110-$size[0])/2, (110-$size[1])/2, 0, 0, $size[0], $size[1]); // Also calculates how to center the avatar
 
