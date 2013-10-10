@@ -65,8 +65,8 @@ for ($a = 0; $a < (20*PAGES); $a++) {
 foreach ($avatars as &$image) {
 	if (strpos($image, "gravatar.com") !== false) {
 		$image = substr($image, 0, 69);
-		if (file_get_contents($image) == file_get_contents("default.jpg")) {
-			$image = "http://i2.wp.com/webdevrefinery.com/forums/public/style_images/Cielo/profile/default_large.png";
+		if (file_get_contents($image) == file_get_contents("images/gravatar_default.jpg")) {
+			$image = "images/wdr_default.png";
 		}
 	}
 }

@@ -27,10 +27,10 @@ imagecopy($im, $avatar, (110-$size[0])/2, (110-$size[1])/2, 0, 0, $size[0], $siz
 
 
 if ($state['Status']=="Online") {
-    $stateImage = imagecreatefrompng("online.png");
+    $stateImage = imagecreatefrompng("images/online.png");
     imagecopy($im, $stateImage, 600, 23.5, 0, 0, 183, 60);
 } else {
-    $stateImage = imagecreatefrompng("offline.png");
+    $stateImage = imagecreatefrompng("images/offline.png");
     imagecopy($im, $stateImage, 600, 23.5, 0, 0, 199, 60);
 }
 
