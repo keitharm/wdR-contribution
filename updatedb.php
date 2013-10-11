@@ -5,7 +5,7 @@ require_once 'functions.php';
 # Base URL
 define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
 # Number of pages to extract
-define("PAGES", 5);
+define("PAGES", 10);
 # Sort data by (username, score, post, rep, join, ppd)
 define("SORT", "join");
 # Reverse results?
@@ -16,7 +16,6 @@ echo "Pages to fetch: \t\t" . PAGES . "\n";
 echo "Total expected results: \t" . PAGES*20 . "\n";
 echo "Sorting by: \t\t\t" . SORT . "\n";
 echo "Reverse sorting: \t\t" . (int)REVERSE . "\n";
-sleep(1);
 
 $reps = array();
 $names = array();
