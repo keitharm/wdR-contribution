@@ -18,7 +18,7 @@ $im = imagecreatetruecolor(800, 110);
 $background_color = imagecolorallocate($im, 248, 248, 248);
 imagefill($im, 0, 0, $background_color);
 $text_color = imagecolorallocate($im, 0, 0, 255);
-imagestring($im, 15, 110, 50, $string, $text_color);
+imagettftext($im, 12.5, 0, 110, 62, $text_color, "fonts/helvetica.ttf", $string);
 
 // Overlaying the previously generated text only signature, with the user's avatar
 $avatar = imagecreatefromstring(file_get_contents($userData->avatar));
