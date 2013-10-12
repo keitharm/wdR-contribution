@@ -204,12 +204,16 @@ function getUserRank($username) {
 
     $rank = 1;
     while ($row = $statement->fetch()) {
-        if ($row["username"]==$username) {
+        if (strtolower($row["username"]) == strtolower($username)) {
             return $rank;
-            break;
         } else {
             $rank++;
         }
     }
+}
+
+function fixUsername($username) {
+    $data = getUserData($username);
+    return $data->username;
 }
 ?>

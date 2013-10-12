@@ -3,7 +3,7 @@ require_once("functions.php");
 header('Content-Type: image/png');
 
 // Username to fetch
-define("USERNAME", $_GET['user']);
+define("USERNAME", fixUsername($_GET['user']));
 
 $userData = getUserData(USERNAME);
 $state = getUserOnlineState(USERNAME);
