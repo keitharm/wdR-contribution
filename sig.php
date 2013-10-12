@@ -1,9 +1,13 @@
 <?php
 require_once("functions.php");
-header('Content-Type: image/png');
 
 // Username to fetch
 define("USERNAME", fixUsername($_GET['user']));
+
+// Stop script if username doesn't exist in DB
+if (USERNAME == null) {
+	die("Invalid User");
+}
 
 $userData = getUserData(USERNAME);
 $state = getUserOnlineState(USERNAME);
@@ -32,7 +36,6 @@ $avatar = imagecreatefromstring(file_get_contents($userData->avatar));
 $size = getimagesize($userData->avatar);
 imagecopy($im, $avatar, (110-$size[0])/2, (110-$size[1])/2, 0, 0, $size[0], $size[1]); // Also calculates how to center the avatar
 
-
 if ($state['Status']=="Online") {
     $stateImage = imagecreatefrompng("images/online.png");
     imagecopy($im, $stateImage, 660, 35, 0, 0, 120, 40);
@@ -41,6 +44,6 @@ if ($state['Status']=="Online") {
     imagecopy($im, $stateImage, 660, 35, 0, 0, 120, 40);
 }
 
+header('Content-Type: image/png');
 imagepng($im);
-
 ?>

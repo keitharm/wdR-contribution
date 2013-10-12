@@ -214,6 +214,9 @@ function getUserRank($username) {
 
 function fixUsername($username) {
     $data = getUserData($username);
+    if ($data == null) {
+        return null;
+    }
     return $data->username;
 }
 ?>
