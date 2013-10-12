@@ -1,6 +1,6 @@
 <?php
 # Database info
-$config[db][dbname] = "code_wdr";
-$config[db][username] = "code_wdr";
-$config[db][password] = "totallynotmyactualpassword:)!";
+$config['db']['dbname'] = "wdr-contribution";
+$config['db']['username'] = "root";
+$config['db']['password'] = "";
 ?>
