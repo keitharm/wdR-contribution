@@ -4,6 +4,13 @@ require_once("functions.php");
 // Username to fetch
 define("USERNAME", fixUsername($_GET['user']));
 
+if (isset($_GET['theme'])) {
+    define("SIG_THEME", $_GET['theme']);
+} else {
+    die("No theme selected.");
+}
+
+
 // Stop script if username doesn't exist in DB
 if (USERNAME == null) {
 	die("Invalid User");
@@ -22,10 +29,17 @@ $rank = getUserRank(USERNAME);
 $string = USERNAME . " has " . $userData->reputation . " rep points. That's " . $RepPerDay . " rep per day!";
 
 $im = imagecreatetruecolor(800, 110);
-$bg = imagecreatefrompng("images/sig_background.png");
-imagecopyresampled($im, $bg, 0, 0, 0, 0, 800, 110, 800, 110);
 
-$text_color = imagecolorallocate($im, 0, 0, 255);
+if (SIG_THEME=="light") {
+    $bg = imagecreatefrompng("images/sig_back_light.png");
+    $text_color = imagecolorallocate($im, 0, 0, 255);
+}
+if (SIG_THEME=="dark") {
+    $bg = imagecreatefrompng("images/sig_back_dark.png");
+    $text_color = imagecolorallocate($im, 255, 255, 255);
+}
+
+imagecopyresampled($im, $bg, 0, 0, 0, 0, 800, 110, 800, 110);
 imagettftext($im, 13, 0, 110, 30, $text_color, "fonts/helvetica.ttf", $string);
 imagettftext($im, 13, 0, 110, 52, $text_color, "fonts/helvetica.ttf", "Current Rank: " . $rank);
 imagettftext($im, 9, 0, 110, 75, $text_color, "fonts/helvetica.ttf", "Joined: " . $joined);

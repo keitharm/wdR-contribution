@@ -53,7 +53,7 @@
                             echo "<td>{$row["posts"]}</td>";
                             echo "<td>{$row["reputation"]}</td>";
                             echo "<td>{$row["score"]}</td>";
-                            echo "<td><a href='sig.php?user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
+                            echo "<td><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";
                             $rank++;
                         }
