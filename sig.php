@@ -16,7 +16,11 @@ $posts = $userData->posts;
 // Creating the string to be written to the signature image
 $string = USERNAME . " has " . $userData->reputation . " rep points. That's " . $RepPerDay . " rep per day!";
 
-$im = imagecreatefrompng("images/sig_background.png");
+$im=imagecreatetruecolor(800, 110);
+$bg=imagecreatefrompng("images/sig_background.png");
+imagecopyresampled($im, $bg, 0, 0,0 ,0, 800, 110, 800, 110);
+
+//$im = imagecreatefrompng("images/sig_background.png");
 $text_color = imagecolorallocate($im, 0, 0, 255);
 imagettftext($im, 13, 0, 110, 40, $text_color, "fonts/helvetica.ttf", $string);
 imagettftext($im, 9, 0, 110, 65, $text_color, "fonts/helvetica.ttf", "Joined: " . $joined);
