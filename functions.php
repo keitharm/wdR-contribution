@@ -196,4 +196,20 @@ function getUserOnlineState($username) {
 
     return $data;
 }
+
+function getUserRank($username) {
+    $db = database();
+    $statement = $db->query("SELECT * FROM users ORDER BY score desc LIMIT 100");
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    $rank = 1;
+    while ($row = $statement->fetch()) {
+        if ($row["username"]==$username) {
+            return $rank;
+            break;
+        } else {
+            $rank++;
+        }
+    }
+}
 ?>
