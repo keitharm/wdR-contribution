@@ -51,7 +51,7 @@
                             echo "<td>{$row["username"]}</td>";
                             echo "<td>{$row["reputation"]}</td>";
                             echo "<td>{$row["posts"]}</td>";
-                            echo "<td>{$row["reputation"]}</td>";
+                            echo "<td>" . date("m-d-y", $row["joindate"]) . "</td>";
                             echo "<td>{$row["score"]}</td>";
                             echo "<td><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";
