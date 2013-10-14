@@ -1,10 +1,11 @@
 <?php
 // Configuration values for DB connection
-require_once('config.php');
+require_once("config.php");
 
 // All Functions below this line //
 function database() {
     global $config;
+
     $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config['db']['dbname'], $config['db']['username'], $config['db']['password']);
     return $db;
 }
@@ -83,9 +84,8 @@ function findall($needle, $haystack) {
     } 
     if (array_key_exists(0, $found)) { 
         return $found;
-    } else { 
-        return false;
-    } 
+    }
+    return false;
 }
 
 function userExists($username) {
@@ -95,9 +95,8 @@ function userExists($username) {
     $info = $statement->FetchObject();
     if ($info != null) {
         return 1;
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 function getUserData($username) {

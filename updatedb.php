@@ -1,6 +1,6 @@
 <?php
 set_time_limit(0);
-require_once 'functions.php';
+require_once("functions.php");
 
 # Base URL
 define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
@@ -56,8 +56,6 @@ foreach ($joins as &$join) {
 // Calculate scores with reputation * (posts/minutes since registration)
 for ($a = 0; $a < (20*PAGES); $a++) {
 	 $scores[] = ($reps[$a]*($posts[$a]/((time()-$joins[$a])/86400)));
-	// Old algorithm
-	//$scores[] = round(($reps[$a]/$posts[$a])*100, 2);
 }
 
 // Fix for Avatars
@@ -87,14 +85,11 @@ if (REVERSE) {
     $results = array_reverse($results);
 }
 
-
 $rank = 0;
 for ($a = 0; $a < (20*PAGES); $a++) {
 	if (!userExists($results[$a][username])) {
-		// Add user
 		addUser($results[$a][username], round($results[$a][score], 2), $results[$a][post], $results[$a][rep], $results[$a][join], round($results[$a][post]/((time()-$results[$a][join])/86400), 2), $results[$a][url], $results[$a][avatar]);
 	} else {
-		// Update user
 		updateUser($results[$a][username], round($results[$a][score], 2), $results[$a][post], $results[$a][rep], $results[$a][join], round($results[$a][post]/((time()-$results[$a][join])/86400), 2), $results[$a][url], $results[$a][avatar]);
 	}
 }
