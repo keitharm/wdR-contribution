@@ -4,14 +4,13 @@ require_once("functions.php");
 // Username to fetch
 define("USERNAME", fixUsername($_GET['user']));
 
-if (isset($_GET['theme'])) {
+if (isset($_GET['theme']) && in_array(strtolower($_GET['theme']), array("light", "dark"))) {
     define("SIG_THEME", $_GET['theme']);
 } else {
-    die("No theme selected.");
+    define("SIG_THEME", "light");
 }
 
-
-// Stop script if username doesn't exist in DB
+// Stop script if username doesn't exist in database
 if (USERNAME == null) {
 	die("Invalid User");
 }
