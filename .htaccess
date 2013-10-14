@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^([a-z0-9\_]+)/([a-z0-9\_]+)$ /sig.php?user=$1&theme=$2
