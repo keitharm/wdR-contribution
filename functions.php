@@ -283,12 +283,13 @@ function calculateTotals($userid) {
     $ppd = round($posts / $timedif, 2);
 
     // Update total values
+    echo "User id: " . $userid . "\nUsername: " . $username . "\nScore: " . $score . "Posts: " . $posts . "\nReputation: " . $reputation . "\nPPD: " . $ppd . "\navatar: " . $avatar . "\nLogins: " . $logins . "\n";
     updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins);
 }
 
 function updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins) {
     $db = database();
-    $statement = $db->prepare("INSERT INTO `total` (`username`, `score`, `posts`, `reputation`, `joindate`, `ppd`, `url`, `avatar`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $statement->execute(array($username, $score, $posts, $reputation, $joindate, $ppd, $url, $avatar));
+    $statement = $db->prepare("INSERT INTO `total` (`userid`, `username`, `score`, `posts`, `reputation`, `ppd`, `avatar`, `logins`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $statement->execute(array($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins));
 }
 ?>
