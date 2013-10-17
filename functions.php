@@ -120,6 +120,12 @@ function updateUser($username, $score, $posts, $reputation, $joindate, $ppd, $ur
     $statement->execute(array($score, $posts, $reputation, $joindate, $ppd, $url, $avatar, $username));
 }
 
+function addUserBase($userid, $posts, $reputation) {
+    $db = database();
+    $statement = $db->prepare("INSERT INTO `base` (`userid`, `posts`, `reputation`) VALUES (?, ?, ?)");
+    $statement->execute(array($userid, $posts, $reputation));
+}
+
 // LOL!
 function searchForWordsInString($data, $values) {
     $found = array();
