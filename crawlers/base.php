@@ -1,0 +1,45 @@
+<?php
+set_time_limit(0);
+require_once("../functions.php");
+
+# Base URL
+define("URL", "http://webdevrefinery.com/forums/members/?sort_key=joined&sort_order=desc&max_results=20&st=");
+# Number of pages to extract
+define("PAGES", 10);
+
+echo "--------------Settings--------------\n";
+echo "Pages to fetch: \t\t" . PAGES . "\n";
+echo "Total expected results: \t" . PAGES*20 . "\n";
+
+$reps = array();
+$posts = array();
+$userid = array();
+
+$results = array();
+
+// Fetch and extract data
+echo "\nFetching data from wdR...\n";
+for ($a = 0; $a < PAGES; $a++) {
+	$data = file_get_contents(URL . $a*20);
+
+	$reps_tmp  = extractData($data, "<span class='number'>", "</span>");
+	$posts_tmp = extractData($data, "</span><span class='left'>", "</span>");
+	$userid_tmp = extractData(extractData($data, "<strong><a href='", "' title='View Profile'>"), "user/", "-");
+
+	$reps = array_merge($reps, $reps_tmp);
+	$posts = array_merge($posts, $posts_tmp);
+	$userid = array_merge($userid, $userid_tmp);
+    echo "Fetched " . ($a+1)*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
+}
+
+// Combine into nice multidimensional array for sorting
+for ($a = 0; $a < (20*PAGES); $a++) {
+	$results[$a][post] = $posts[$a];
+	$results[$a][rep] = $reps[$a];
+	$results[$a][userid] = $userid[$a];
+}
+
+for ($a = 0; $a < (20*PAGES); $a++) {
+	addUserBase($results[$a][userid], $results[$a][post], $results[$a][rep]);
+}
+?>
