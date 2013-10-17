@@ -31,6 +31,6 @@ for ($a = 0; $a < PAGES; $a++) {
 	for ($b = 0; $b < 20; $b++) {
 		addUserBase($userid[$b], $posts[$b], $reps[$b]);
 	}
-    echo "Fetched and saved " . ($a+1)*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
+    echo "Fetched and saved " . ($a+1)*20 . " / " . PAGES*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
 }
 ?>
