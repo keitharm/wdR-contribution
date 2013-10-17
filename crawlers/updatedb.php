@@ -1,11 +1,11 @@
 <?php
 set_time_limit(0);
-require_once("functions.php");
+require_once("../functions.php");
 
 # Base URL
 define("URL", "http://webdevrefinery.com/forums/members/?sort_key=joined&sort_order=asc&max_results=20&st=");
 # Number of pages to extract
-define("PAGES", 547);
+define("PAGES", 2);
 
 echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
@@ -16,6 +16,7 @@ $scores = array();
 // Constant date and cycle
 $date = time();
 $cycle = getLastCycle();
+$loggedon = 0;
 
 // Fetch and extract data
 echo "\nFetching data from wdR...\n";
@@ -30,7 +31,7 @@ for ($a = 0; $a < PAGES; $a++) {
 
 	$reps_tmp  = extractData($data, "<span class='number'>", "</span>");
 	$names_tmp = extractData($data, "View Profile'>", "</a>");
-	$posts_tmp = extractData($data, "</span><span class='left'>", "</span>");
+	$posts_tmp = extractData($data, "</span><span class='left'>", " posts</span>");
 	$avatars_tmp = extractData($data, "left'><img src='", "' alt=");
 	$userid_tmp = extractData($data, "<li id='member_id_", "' class='ipsP");
 
@@ -61,7 +62,7 @@ for ($a = 0; $a < PAGES; $a++) {
 	}
 
 	for ($c = 0; $c < 20; $c++) {
-		addEntry($userid[$c], $names[$c], $time, $cycle, $avatars[$c], (($posts[$c]*10) + ($reps[$c]*25) + ($loggedon*5)), $posts[$c], $reps[$c], $loggedon);
+		addEntry($userid[$c], $names[$c], $date, $cycle, $avatars[$c], (($posts[$c]*10) + ($reps[$c]*25) + ($loggedon*5)), $posts[$c], $reps[$c], $loggedon);
 	}
     echo "Fetched and saved " . ($a+1)*20 . " / " . PAGES*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
 }
