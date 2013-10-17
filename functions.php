@@ -10,32 +10,6 @@ function database() {
     return $db;
 }
 
-// Sorting functions
-function sort_by_username($a, $b) {
-    return strcmp($a["username"], $b["username"]);
-}
-
-function sort_by_score($a, $b) {
-    return ($b[score]*100) - ($a[score]*100);
-}
-
-function sort_by_post($a, $b) {
-    return ($b[post]) - ($a[post]);
-}
-
-function sort_by_rep($a, $b) {
-    return ($b[rep]) - ($a[rep]);
-}
-
-function sort_by_join($a, $b) {
-    return ($a[join]) - ($b[join]);
-}
-
-function sort_by_ppd($a, $b) {
-    return (round($b[post]/((time()-$b[join])/86400), 2)*100) - (round($a[post]/((time()-$a[join])/86400), 2)*100);
-}
-//////////////////////
-
 function extractData($data, $search, $ending, $specific = -1) {
 	$matches = findall($search, $data);
 	foreach ($matches as &$val) {
@@ -223,5 +197,60 @@ function fixUsername($username) {
         return null;
     }
     return $data->username;
+}
+
+function addEntry($userid, $username, $date, $cycle, $avatar, $score, $posts, $reputation, $loggedon) {
+    // current - total - base gets daily difference
+    $posts -= getTotal($userid, "posts") - (getBase($userid, "posts");
+    $reputation -= getTotal($userid, "reputation") - (getBase($userid, "reputation");
+
+    $db = database();
+    $statement = $db->prepare("INSERT INTO `history` (`userid`, `username`, `date`, `cycle`, `avatar`, `score`, `posts`, `reputation`, `loggedon`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $statement->execute(array($userid, $username, $date, $cycle, $avatar, $score, $posts, $reputation, $loggedon));
+}
+
+function getBase($userid, $type) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `base` WHERE `userid` = ?");
+    $statement->execute(array($userid));
+    $info = $statement->FetchObject();
+
+    if ($info == null) {
+        return 0;
+    }
+    return $info->$type;
+}
+
+function getLast($userid, $type) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `history` WHERE `userid` = ? ORDER BY `cycle` DESC");
+    $statement->execute(array($userid));
+    $info = $statement->FetchObject();
+
+    if ($info == null) {
+        return 0;
+    }
+    return $info->$type;
+}
+
+function getTotal($userid, $type) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
+    $statement->execute(array($userid));
+    $info = $statement->FetchObject();
+
+    if ($info == null) {
+        return 0;
+    }
+    return $info->$type;
+}
+
+function getLastCycle() {
+    $db = database();
+    $statement = $db->prepare("SELECT `cycle` FROM `history` ORDER BY `cycle` DESC LIMIT 1;");
+    $statement->execute();
+    $info = $statement->FetchObject();
+
+    return $info->cycle;
 }
 ?>
