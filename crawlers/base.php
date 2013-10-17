@@ -11,15 +11,13 @@ echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
 echo "Total expected results: \t" . PAGES*20 . "\n";
 
-$reps = array();
-$posts = array();
-$userid = array();
-
-$results = array();
-
 // Fetch and extract data
 echo "\nFetching data from wdR...\n";
 for ($a = 0; $a < PAGES; $a++) {
+	$reps = array();
+	$posts = array();
+	$userid = array();
+
 	$data = file_get_contents(URL . $a*20);
 
 	$reps_tmp  = extractData($data, "<span class='number'>", "</span>");
@@ -35,7 +33,7 @@ for ($a = 0; $a < PAGES; $a++) {
 	$userid = array_merge($userid, $userid_tmp);
 
 	for ($b = 0; $b < 20; $b++) {
-		addUserBase($reps[$b], $posts[$b], $userid[$b]);
+		addUserBase($userid[$b], $posts[$b], $reps[$b]);
 	}
     echo "Fetched and saved " . ($a+1)*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
 }
