@@ -11,23 +11,22 @@ echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
 echo "Total expected results: \t" . PAGES*20 . "\n";
 
-$scores = array();
-
 // Constant date and cycle
 $date = time();
 $cycle = getLastCycle();
-$loggedon = 0;
 
 // Fetch and extract data
 echo "\nFetching data from wdR...\n";
 for ($a = 0; $a < PAGES; $a++) {
+	$data = file_get_contents(URL . $a*20);
+
 	$reps = array();
 	$names = array();
 	$posts = array();
 	$avatars = array();
 	$userid = array();
-
-	$data = file_get_contents(URL . $a*20);
+	$status = array();
+	$status_tmp = array();
 
 	$reps_tmp  = extractData($data, "<span class='number'>", "</span>");
 	$names_tmp = extractData($data, "View Profile'>", "</a>");
@@ -35,20 +34,27 @@ for ($a = 0; $a < PAGES; $a++) {
 	$avatars_tmp = extractData($data, "left'><img src='", "' alt=");
 	$userid_tmp = extractData($data, "<li id='member_id_", "' class='ipsP");
 
+	// Find out if user has logged in within last 24 hours.
+	foreach ($userid_tmp as $id) {
+		$userprofile = file_get_contents("http://webdevrefinery.com/forums/user/" . $id . "-");
+		$rawstatus = searchForWordsInString(extractData($url, "<span class='ipsBadge", "</span>"), array("Online", "Offline"));
+		if ($rawstatus == "Online") {
+			$status_tmp[] = 1;
+		} else {
+			$status_tmp[] = 0;
+		}
+	}
+
 	$reps = array_merge($reps, $reps_tmp);
 	$names = array_merge($names, $names_tmp);
 	$posts = array_merge($posts, $posts_tmp);
 	$avatars = array_merge($avatars, $avatars_tmp);
 	$userid = array_merge($userid, $userid_tmp);
+	$status = array_merge($status, $status_tmp);
 
 	// Update join dates into UNIX timestamp
 	foreach ($joins as &$join) {
 		$join = strtotime($join);
-	}
-
-	// Calculate scores with reputation * (posts/minutes since registration)
-	for ($b = 0; $b < 20; $b++) {
-		 $scores[] = ($reps[$b]*($posts[$b]/((time()-$joins[$b])/86400)));
 	}
 
 	// Fix for Avatars
@@ -62,7 +68,7 @@ for ($a = 0; $a < PAGES; $a++) {
 	}
 
 	for ($c = 0; $c < 20; $c++) {
-		addEntry($userid[$c], $names[$c], $date, ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $loggedon);
+		addEntry($userid[$c], $names[$c], $date, ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $status[$c]);
 		calculateTotals($userid[$c]);
 	}
     echo "Fetched, saved, and updated " . ($a+1)*20 . " / " . PAGES*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";

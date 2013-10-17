@@ -283,7 +283,7 @@ function calculateTotals($userid) {
     $ppd = round($posts / $timedif, 2);
 
     // Update total values
-    echo "User id: " . $userid . "\nUsername: " . $username . "\nScore: " . $score . "Posts: " . $posts . "\nReputation: " . $reputation . "\nPPD: " . $ppd . "\navatar: " . $avatar . "\nLogins: " . $logins . "\n";
+    //echo "User id: " . $userid . "\nUsername: " . $username . "\nScore: " . $score . "Posts: " . $posts . "\nReputation: " . $reputation . "\nPPD: " . $ppd . "\navatar: " . $avatar . "\nLogins: " . $logins . "\n";
     updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins);
 }
 
