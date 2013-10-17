@@ -1,0 +1,12 @@
+Table
+
+base: Table that contains all of the current user values on wdR at the time of running the script so that new post and rep counts can be calculated.
+
+userid - The user's userid on wdR in their user profile page url
+	Example: http://webdevrefinery.com/forums/user/1-kyek/ means that Kyek's id is 1
+posts - The current posts that a user has
+reputation - The current reputation that a user has.
+
+history: Contains the differences that have occured within a 24 hour period
+
+total: The total added up changes of records in history
