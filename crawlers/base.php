@@ -22,11 +22,7 @@ for ($a = 0; $a < PAGES; $a++) {
 
 	$reps_tmp  = extractData($data, "<span class='number'>", "</span>");
 	$posts_tmp = extractData($data, "</span><span class='left'>", "</span>");
-	$userid_tmp = extractData($data, "<strong><a href='", "' title='View Profile'>");
-
-	foreach ($userid_tmp as &$user_idv) {
-		$user_idv = extractData($user_idv, "user/", "-");
-	}
+	$userid_tmp = extractData($data, "<li id='member_id_", "' class='ipsP");
 
 	$reps = array_merge($reps, $reps_tmp);
 	$posts = array_merge($posts, $posts_tmp);
