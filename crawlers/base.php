@@ -5,7 +5,7 @@ require_once("../functions.php");
 # Base URL
 define("URL", "http://webdevrefinery.com/forums/members/?sort_key=joined&sort_order=asc&max_results=20&st=");
 # Number of pages to extract
-define("PAGES", 10);
+define("PAGES", 547);
 
 echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
@@ -33,17 +33,10 @@ for ($a = 0; $a < PAGES; $a++) {
 	$reps = array_merge($reps, $reps_tmp);
 	$posts = array_merge($posts, $posts_tmp);
 	$userid = array_merge($userid, $userid_tmp);
-    echo "Fetched " . ($a+1)*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
-}
 
-// Combine into nice multidimensional array for sorting
-for ($a = 0; $a < (20*PAGES); $a++) {
-	$results[$a][post] = $posts[$a];
-	$results[$a][rep] = $reps[$a];
-	$results[$a][userid] = $userid[$a];
-}
-
-for ($a = 0; $a < (20*PAGES); $a++) {
-	addUserBase($results[$a][userid], $results[$a][post], $results[$a][rep]);
+	for ($b = 0; $b < 20; $b++) {
+		addUserBase($reps[$b], $posts[$b], $userid[$b]);
+	}
+    echo "Fetched and saved " . ($a+1)*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
 }
 ?>
