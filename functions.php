@@ -199,11 +199,12 @@ function fixUsername($username) {
     return $data->username;
 }
 
-function addEntry($userid, $username, $date, $cycle, $avatar, $score, $posts, $reputation, $loggedon) {
+function addEntry($userid, $username, $date, $cycle, $avatar, $posts, $reputation, $loggedon) {
     // current - total - base gets daily difference
     $posts = $posts - getTotal($userid, "posts") - getBase($userid, "posts");
     $reputation = $reputation - getTotal($userid, "reputation") - getBase($userid, "reputation");
-
+    $score = $posts*10 + $reputation*25 + $loggedon*5;
+    
     $db = database();
     $statement = $db->prepare("INSERT INTO `history` (`userid`, `username`, `date`, `cycle`, `avatar`, `score`, `posts`, `reputation`, `loggedon`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $statement->execute(array($userid, $username, $date, $cycle, $avatar, $score, $posts, $reputation, $loggedon));
