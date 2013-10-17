@@ -3,7 +3,7 @@ set_time_limit(0);
 require_once("../functions.php");
 
 # Base URL
-define("URL", "http://webdevrefinery.com/forums/members/?sort_key=joined&sort_order=desc&max_results=20&st=");
+define("URL", "http://webdevrefinery.com/forums/members/?sort_key=joined&sort_order=asc&max_results=20&st=");
 # Number of pages to extract
 define("PAGES", 10);
 
@@ -24,7 +24,11 @@ for ($a = 0; $a < PAGES; $a++) {
 
 	$reps_tmp  = extractData($data, "<span class='number'>", "</span>");
 	$posts_tmp = extractData($data, "</span><span class='left'>", "</span>");
-	$userid_tmp = extractData(extractData($data, "<strong><a href='", "' title='View Profile'>"), "user/", "-");
+	$userid_tmp = extractData($data, "<strong><a href='", "' title='View Profile'>");
+
+	foreach ($userid_tmp as &$user_idv) {
+		$user_idv = extractData($user_idv, "user/", "-");
+	}
 
 	$reps = array_merge($reps, $reps_tmp);
 	$posts = array_merge($posts, $posts_tmp);
