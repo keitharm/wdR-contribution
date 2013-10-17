@@ -62,8 +62,9 @@ for ($a = 0; $a < PAGES; $a++) {
 	}
 
 	for ($c = 0; $c < 20; $c++) {
-		addEntry($userid[$c], $names[$c], $date, $cycle, $avatars[$c], $posts[$c], $reps[$c], $loggedon);
+		addEntry($userid[$c], $names[$c], $date, ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $loggedon);
+		calculateTotals($userid[$c]);
 	}
-    echo "Fetched and saved " . ($a+1)*20 . " / " . PAGES*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
+    echo "Fetched, saved, and updated " . ($a+1)*20 . " / " . PAGES*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
 }
 ?>

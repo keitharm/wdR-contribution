@@ -204,7 +204,7 @@ function addEntry($userid, $username, $date, $cycle, $avatar, $posts, $reputatio
     $posts = $posts - getTotal($userid, "posts") - getBase($userid, "posts");
     $reputation = $reputation - getTotal($userid, "reputation") - getBase($userid, "reputation");
     $score = $posts*10 + $reputation*25 + $loggedon*5;
-    
+
     $db = database();
     $statement = $db->prepare("INSERT INTO `history` (`userid`, `username`, `date`, `cycle`, `avatar`, `score`, `posts`, `reputation`, `loggedon`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $statement->execute(array($userid, $username, $date, $cycle, $avatar, $score, $posts, $reputation, $loggedon));
@@ -256,5 +256,39 @@ function getLastCycle() {
         return 0;
     }
     return $info->cycle;
+}
+
+function calculateTotals($userid) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `history` WHERE `userid` = ? ORDER BY `cycle` DESC");
+    $statement->execute(array($userid));
+
+    $first = true;
+    while ($info = $statement->FetchObject()) {
+        // Get the most recent avatar and username
+        if ($first) {
+            $avatar = $info->avatar;
+            $username = $info->username;
+            $first = false;
+        }
+        // Add up totals
+        $score += $info->score;
+        $posts += $info->posts;
+        $reputation += $info->reputation;
+        $logins += $info->loggedon;
+    }
+
+    // Calculate PPD
+    $timedif = ceil((time() - START_TIME) * 86400);
+    $ppd = round($posts / $timedif, 2);
+
+    // Update total values
+    updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins);
+}
+
+function updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins) {
+    $db = database();
+    $statement = $db->prepare("INSERT INTO `total` (`username`, `score`, `posts`, `reputation`, `joindate`, `ppd`, `url`, `avatar`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $statement->execute(array($username, $score, $posts, $reputation, $joindate, $ppd, $url, $avatar));
 }
 ?>
