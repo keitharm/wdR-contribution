@@ -296,12 +296,32 @@ function updateRanks() {
 }
 
 function updateHistoryRanks() {
-
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `total` ORDER BY `score` DESC");
+    $statement->execute();
+    while ($info = $statement->fetchObject()) {
+        changeHistoryVal($info->userid, "rank", $info->rank);
+    }
 }
 
 function changeVal($userid, $fieldname, $value) {
     $db = database();
-    $statement = $db->prepare("UPDATE `total` SET $fieldname = ? WHERE `userid` = ?");
+    $statement = $db->prepare("UPDATE `total` SET `$fieldname` = ? WHERE `userid` = ?");
     $statement->execute(array($value, $userid));
+}
+
+function changeHistoryVal($userid, $fieldname, $value) {
+    $db = database();
+    $statement = $db->prepare("UPDATE `history` SET `$fieldname` = ? WHERE `userid` = ? AND `cycle` = ?");
+    $statement->execute(array($value, $userid, getLastCycle()));
+}
+
+function getVal($userid, $fieldname) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
+    $statement->execute(array($userid));
+    $info = $statement->fetchObject();
+
+    return $info->$fieldname;
 }
 ?>
