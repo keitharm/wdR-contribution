@@ -5,7 +5,6 @@ require_once("config.php");
 // All Functions below this line //
 function database() {
     global $config;
-
     $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config['db']['dbname'], $config['db']['username'], $config['db']['password']);
     return $db;
 }
@@ -62,10 +61,10 @@ function findall($needle, $haystack) {
     return false;
 }
 
-function userExists($username) {
+function userExists($userid) {
     $db = database();
-    $statement = $db->prepare("SELECT * FROM users WHERE `username` = ?");
-    $statement->execute(array($username));
+    $statement = $db->prepare("SELECT * FROM total WHERE `userid` = ?");
+    $statement->execute(array($userid));
     $info = $statement->FetchObject();
     if ($info != null) {
         return 1;
@@ -73,25 +72,13 @@ function userExists($username) {
     return 0;
 }
 
-function getUserData($username) {
+function getUserData($userid) {
     $db = database();
-    $statement = $db->prepare("SELECT * FROM `users` WHERE `username` = ?");
+    $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
     $statement->execute(array($username));
     $info = $statement->FetchObject();
 
     return $info;
-}
-
-function addUser($username, $score, $posts, $reputation, $joindate, $ppd, $url, $avatar) {
-    $db = database();
-    $statement = $db->prepare("INSERT INTO `users` (`username`, `score`, `posts`, `reputation`, `joindate`, `ppd`, `url`, `avatar`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $statement->execute(array($username, $score, $posts, $reputation, $joindate, $ppd, $url, $avatar));
-}
-
-function updateUser($username, $score, $posts, $reputation, $joindate, $ppd, $url, $avatar) {
-    $db = database();
-    $statement = $db->prepare("UPDATE `users` SET `score` = ?, `posts` = ?, `reputation` = ?, `joindate` = ?, `ppd` = ?, `url` = ?, `avatar` = ? WHERE `username` = ?");
-    $statement->execute(array($score, $posts, $reputation, $joindate, $ppd, $url, $avatar, $username));
 }
 
 function addUserBase($userid, $posts, $reputation) {
@@ -119,11 +106,9 @@ function searchForWordsInString($data, $values) {
     }
 }
 
-function userStats($username) {
-    $info = getUserData($username);
-
+function userStats($userid) {
     # User's profile URL
-    $url = file_get_contents($info->url);
+    $url = file_get_contents("http://webdevrefinery.com/forums/user/" . $userid . "-");
 
     $offset = 0;
     if (strpos($url, "Member Title") !== false) {
@@ -165,34 +150,17 @@ function userStats($username) {
     return $data;
 }
 
-function getUserOnlineState($username) {
-    $info = getUserData($username);
-
+function getUserOnlineState($userid) {
     # User's profile URL
-    $url = file_get_contents($info->url);
-
+    $url = file_get_contents("http://webdevrefinery.com/forums/user/" . $userid . "-");
     $data = array("Status" => searchForWordsInString(extractData($url, "<span class='ipsBadge", "</span>"), array("Online", "Offline")));
 
     return $data;
 }
 
-function getUserRank($username) {
-    $db = database();
-    $statement = $db->query("SELECT * FROM users ORDER BY score desc LIMIT 100");
-    $statement->setFetchMode(PDO::FETCH_ASSOC);
-
-    $rank = 1;
-    while ($row = $statement->fetch()) {
-        if (strtolower($row["username"]) == strtolower($username)) {
-            return $rank;
-        } else {
-            $rank++;
-        }
-    }
-}
-
 function fixUsername($username) {
-    $data = getUserData($username);
+    $userid = username_to_id($username);
+    $data = getUserData($userid);
     if ($data == null) {
         return null;
     }
@@ -289,7 +257,30 @@ function calculateTotals($userid) {
 
 function updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins) {
     $db = database();
-    $statement = $db->prepare("INSERT INTO `total` (`userid`, `username`, `score`, `posts`, `reputation`, `ppd`, `avatar`, `logins`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $statement->execute(array($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins));
+    if (!userExists($userid)) {
+        $statement = $db->prepare("INSERT INTO `total` (`userid`, `username`, `score`, `posts`, `reputation`, `ppd`, `avatar`, `logins`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $statement->execute(array($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins));
+    } else {
+        $statement = $db->prepare("UPDATE `total` SET `username`=?, `score`=?, `posts`=?, `reputation`=?, `ppd`=?, `avatar`=?, `logins`=? WHERE `userid`=?");
+        $statement->execute(array($username, $score, $posts, $reputation, $ppd, $avatar, $logins, $userid));
+    }
+}
+
+function username_to_id($username) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `total` WHERE `username` = ?");
+    $statement->execute(array($username));
+    $info = $statement->fetchObject();
+
+    return $info->userid;
+}
+
+function id_to_username($userid) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
+    $statement->execute(array($userid));
+    $info = $statement->fetchObject();
+
+    return $info->username;
 }
 ?>
