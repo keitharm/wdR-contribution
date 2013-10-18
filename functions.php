@@ -247,7 +247,7 @@ function calculateTotals($userid) {
     }
 
     // Calculate PPD
-    $timedif = ceil((time() - START_TIME) * 86400);
+    $timedif = ceil((time() - START_TIME) / 86400);
     $ppd = round($posts / $timedif, 2);
 
     // Update total values
