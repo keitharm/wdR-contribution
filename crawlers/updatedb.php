@@ -3,7 +3,7 @@ set_time_limit(0);
 require_once("../functions.php");
 
 # Base URL
-define("URL", "http://webdevrefinery.com/forums/members/?sort_key=joined&sort_order=asc&max_results=20&st=");
+define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
 # Number of pages to extract
 define("PAGES", 2);
 

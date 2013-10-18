@@ -75,7 +75,7 @@ function userExists($userid) {
 function getUserData($userid) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
-    $statement->execute(array($username));
+    $statement->execute(array($userid));
     $info = $statement->FetchObject();
 
     return $info;
@@ -123,7 +123,7 @@ function userStats($userid) {
         $lastactive = "Unknown";
     }
 
-    $data = array("Username" => $username, "Group" => searchForWordsInString(extractData($url, "<span class='row_data'>", "</span>", 1), array("Administrators", "Members", "Mini Mod", "Moderators", "Noneditors", "Staff In Review", "Validating")),
+    $data = array("Username" => id_to_username($userid), "Group" => searchForWordsInString(extractData($url, "<span class='row_data'>", "</span>", 1), array("Administrators", "Members", "Mini Mod", "Moderators", "Noneditors", "Staff In Review", "Validating")),
      "Active Posts" => extractData($url, "<span class='row_data'>", "</span>", 2),
       "Profile Views" => extractData($url, "<span class='row_data'>", "</span>", 3),
        "Member Title" => $member_title,
