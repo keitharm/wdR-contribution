@@ -283,4 +283,25 @@ function id_to_username($userid) {
 
     return $info->username;
 }
+
+function updateRanks() {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `total` ORDER BY `score` DESC");
+    $statement->execute();
+
+    $rank = 0;
+    while ($info = $statement->fetchObject()) {
+        changeVal($info->userid, "rank", ++$rank);
+    }
+}
+
+function updateHistoryRanks() {
+
+}
+
+function changeVal($userid, $fieldname, $value) {
+    $db = database();
+    $statement = $db->prepare("UPDATE `total` SET $fieldname = ? WHERE `userid` = ?");
+    $statement->execute(array($value, $userid));
+}
 ?>
