@@ -53,7 +53,7 @@ for ($a = 0; $a < PAGES; $a++) {
 	foreach ($avatars as &$image) {
 		if (strpos($image, "gravatar.com") !== false) {
 			$image = substr($image, 0, 69);
-			if (file_get_contents($image) == file_get_contents("images/gravatar_default.jpg")) {
+			if (file_get_contents($image) == file_get_contents("../images/gravatar_default.jpg")) {
 				$image = "images/wdr_default.png";
 			}
 		}
