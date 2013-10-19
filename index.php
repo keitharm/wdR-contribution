@@ -47,7 +47,7 @@
                         while ($row = $statement->fetch()) {
                             echo "<tr>";
                             echo "<td>$rank</td>";
-                            echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;{$row["username"]}</td>";
+                            echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='http://webdevrefinery.com/forums/user/{$row["userid"]}-'>{$row["username"]}</a></td>";
                             echo "<td>{$row["reputation"]}</td>";
                             echo "<td>{$row["posts"]}</td>";
                             echo "<td>{$row["score"]}</td>";
