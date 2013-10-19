@@ -9,4 +9,7 @@ if (exec("hostname") == "vps.toequest.com") {
 	$config['db']['username'] = "root";
 	$config['db']['password'] = "";
 }
+
+# Constant time since contribution started
+define("START_TIME", 1382044702);
 ?>
