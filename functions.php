@@ -238,10 +238,10 @@ function calculateTotals($userid) {
             $first = false;
         }
         // Add up totals
-        $score += $info->score;
-        $posts += $info->posts;
-        $reputation += $info->reputation;
-        $logins += $info->loggedon;
+        $score = $info->score;
+        $posts = $info->posts;
+        $reputation = $info->reputation;
+        $logins = $info->loggedon;
     }
 
     // Calculate PPD
