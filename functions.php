@@ -230,6 +230,13 @@ function calculateTotals($userid) {
     $statement->execute(array($userid));
 
     $first = true;
+
+    // actually defines the variables before beginning loop so that the loop has something to "add to"
+    $score = 0;
+    $posts = 0;
+    $reputation = 0;
+    $logins = 0;
+
     while ($info = $statement->FetchObject()) {
         // Get the most recent avatar and username
         if ($first) {
@@ -238,10 +245,10 @@ function calculateTotals($userid) {
             $first = false;
         }
         // Add up totals
-        $score = $info->score;
-        $posts = $info->posts;
-        $reputation = $info->reputation;
-        $logins = $info->loggedon;
+        $score += $info->score;
+        $posts += $info->posts;
+        $reputation += $info->reputation;
+        $logins += $info->loggedon;
     }
 
     // Calculate PPD
