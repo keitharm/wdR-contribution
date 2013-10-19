@@ -148,7 +148,7 @@ function getUserOnlineState($userid) {
 // Fix capitalization and case of username
 function fixUsername($username) {
     $userid = username_to_id($username);
-    $data = getUserData($userid);
+    $data = getTotal($userid);
     if ($data == null) {
         return null;
     }
