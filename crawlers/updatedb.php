@@ -1,4 +1,7 @@
 <?php
+/*
+	This script should run once daily to fetch new values, update totals and ranks, etc.
+*/ 
 set_time_limit(0);
 require_once("../functions.php");
 
@@ -11,8 +14,10 @@ echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
 echo "Total expected results: \t" . PAGES*20 . "\n";
 
-// Constant date and cycle
+// Constant date for when we add new entries to history list
 $date = time();
+
+// What cycle are we on? (Cycle count goes up every daily data fetch from wdR)
 $cycle = getLastCycle();
 
 // Fetch and extract data
@@ -20,42 +25,28 @@ echo "\nFetching data from wdR...\n";
 for ($a = 0; $a < PAGES; $a++) {
 	$data = file_get_contents(URL . $a*20);
 
-	$reps = array();
-	$names = array();
-	$posts = array();
-	$avatars = array();
-	$userid = array();
+	// Initialize/Emptry status array
 	$status = array();
-	$status_tmp = array();
 
-	$reps_tmp  = extractData($data, "<span class='number'>", "</span>");
-	$names_tmp = extractData($data, "View Profile'>", "</a>");
-	$posts_tmp = extractData($data, "</span><span class='left'>", " posts</span>");
-	$avatars_tmp = extractData($data, "left'><img src='", "' alt=");
-	$userid_tmp = extractData($data, "<li id='member_id_", "' class='ipsP");
+	// Extract values from wdR member list
+	$reps  = extractData($data, "<span class='number'>", "</span>");
+	$names = extractData($data, "View Profile'>", "</a>");
+	$posts = extractData($data, "</span><span class='left'>", " posts</span>");
+	$avatars = extractData($data, "left'><img src='", "' alt=");
+	$userid = extractData($data, "<li id='member_id_", "' class='ipsP");
 
 	// Find out if user has logged in within last 24 hours.
-	foreach ($userid_tmp as $id) {
+	foreach ($userid as $id) {
 		$userprofile = file_get_contents("http://webdevrefinery.com/forums/user/" . $id . "-");
 		$lastactive = extractData($userprofile, ">Last Active ", "</span>");
 		$lastactive = strtotime($lastactive);
 		if ((time()-$lastactive) <= 86400) {
-			$status_tmp[] = 1;
+			// Has logged in within 24 hours
+			$status[] = 1;
 		} else {
-			$status_tmp[] = 0;
+			// Nope
+			$status[] = 0;
 		}
-	}
-
-	$reps = array_merge($reps, $reps_tmp);
-	$names = array_merge($names, $names_tmp);
-	$posts = array_merge($posts, $posts_tmp);
-	$avatars = array_merge($avatars, $avatars_tmp);
-	$userid = array_merge($userid, $userid_tmp);
-	$status = array_merge($status, $status_tmp);
-
-	// Update join dates into UNIX timestamp
-	foreach ($joins as &$join) {
-		$join = strtotime($join);
 	}
 
 	// Fix for Avatars
@@ -68,6 +59,8 @@ for ($a = 0; $a < PAGES; $a++) {
 		}
 	}
 
+	// Add new stats within this 24 hour period to history and
+	// calculate new totals by adding up user's previous 24h history periods
 	for ($c = 0; $c < 20; $c++) {
 		addEntry($userid[$c], $names[$c], $date, ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $status[$c]);
 		calculateTotals($userid[$c]);

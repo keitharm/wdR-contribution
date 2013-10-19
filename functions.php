@@ -61,6 +61,7 @@ function findall($needle, $haystack) {
     return false;
 }
 
+// Does the user exists in the total table
 function userExists($userid) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM total WHERE `userid` = ?");
@@ -70,21 +71,6 @@ function userExists($userid) {
         return 1;
     }
     return 0;
-}
-
-function getUserData($userid) {
-    $db = database();
-    $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
-    $statement->execute(array($userid));
-    $info = $statement->FetchObject();
-
-    return $info;
-}
-
-function addUserBase($userid, $posts, $reputation) {
-    $db = database();
-    $statement = $db->prepare("INSERT INTO `base` (`userid`, `posts`, `reputation`) VALUES (?, ?, ?)");
-    $statement->execute(array($userid, $posts, $reputation));
 }
 
 // LOL!
@@ -106,6 +92,7 @@ function searchForWordsInString($data, $values) {
     }
 }
 
+// Fetch the user's real time stats from wdR
 function userStats($userid) {
     # User's profile URL
     $url = file_get_contents("http://webdevrefinery.com/forums/user/" . $userid . "-");
@@ -158,6 +145,7 @@ function getUserOnlineState($userid) {
     return $data;
 }
 
+// Fix capitalization and case of username
 function fixUsername($username) {
     $userid = username_to_id($username);
     $data = getUserData($userid);
@@ -167,6 +155,7 @@ function fixUsername($username) {
     return $data->username;
 }
 
+// Add latest stats for that day into history table
 function addEntry($userid, $username, $date, $cycle, $avatar, $posts, $reputation, $loggedon) {
     // current - total - base gets daily difference
     $posts = $posts - getTotal($userid, "posts") - getBase($userid, "posts");
@@ -178,6 +167,7 @@ function addEntry($userid, $username, $date, $cycle, $avatar, $posts, $reputatio
     $statement->execute(array($userid, $username, $date, $cycle, $avatar, $score, $posts, $reputation, $loggedon));
 }
 
+// Get base values of a user
 function getBase($userid, $type) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `base` WHERE `userid` = ?");
@@ -190,6 +180,7 @@ function getBase($userid, $type) {
     return $info->$type;
 }
 
+// Get user's last stats from history
 function getLast($userid, $type) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `history` WHERE `userid` = ? ORDER BY `cycle` DESC");
@@ -202,7 +193,8 @@ function getLast($userid, $type) {
     return $info->$type;
 }
 
-function getTotal($userid, $type) {
+// Fetch the user's data from total table
+function getTotal($userid, $type = null) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
     $statement->execute(array($userid));
@@ -211,9 +203,14 @@ function getTotal($userid, $type) {
     if ($info == null) {
         return 0;
     }
+
+    if ($type === null) {
+        return $info;
+    }
     return $info->$type;
 }
 
+// Get last cycle number
 function getLastCycle() {
     $db = database();
     $statement = $db->prepare("SELECT `cycle` FROM `history` ORDER BY `cycle` DESC LIMIT 1;");
@@ -226,6 +223,7 @@ function getLastCycle() {
     return $info->cycle;
 }
 
+// Calculate user totals by adding up vals from history table
 function calculateTotals($userid) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `history` WHERE `userid` = ? ORDER BY `cycle` DESC");
@@ -251,10 +249,10 @@ function calculateTotals($userid) {
     $ppd = round($posts / $timedif, 2);
 
     // Update total values
-    //echo "User id: " . $userid . "\nUsername: " . $username . "\nScore: " . $score . "Posts: " . $posts . "\nReputation: " . $reputation . "\nPPD: " . $ppd . "\navatar: " . $avatar . "\nLogins: " . $logins . "\n";
     updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins);
 }
 
+// Update Total's table values
 function updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins) {
     $db = database();
     if (!userExists($userid)) {
@@ -284,6 +282,7 @@ function id_to_username($userid) {
     return $info->username;
 }
 
+// Update rankings of user's in total's table
 function updateRanks() {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` ORDER BY `score` DESC");
@@ -295,6 +294,7 @@ function updateRanks() {
     }
 }
 
+// Update the ranks of user's in the history's table
 function updateHistoryRanks() {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` ORDER BY `score` DESC");
@@ -304,18 +304,21 @@ function updateHistoryRanks() {
     }
 }
 
+// Change value of user in total's table
 function changeVal($userid, $fieldname, $value) {
     $db = database();
     $statement = $db->prepare("UPDATE `total` SET `$fieldname` = ? WHERE `userid` = ?");
     $statement->execute(array($value, $userid));
 }
 
+// Change value of user in history's table
 function changeHistoryVal($userid, $fieldname, $value) {
     $db = database();
     $statement = $db->prepare("UPDATE `history` SET `$fieldname` = ? WHERE `userid` = ? AND `cycle` = ?");
     $statement->execute(array($value, $userid, getLastCycle()));
 }
 
+// Get uservale from total's table
 function getVal($userid, $fieldname) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
