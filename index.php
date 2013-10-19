@@ -17,7 +17,7 @@
 
     <?php
         $db = database();
-        $statement = $db->query("SELECT * FROM users ORDER BY score desc LIMIT 100");
+        $statement = $db->query("SELECT * FROM total ORDER BY score desc LIMIT 100");
         $statement->setFetchMode(PDO::FETCH_ASSOC);
     ?>
 </head>
@@ -39,7 +39,6 @@
                         <th>Username</th>
                         <th>Reputation</th>
                         <th>Posts</th>
-                        <th>Join Date</th>
                         <th>Score</th>
                         <th>Signature</th>
                     </tr>
@@ -51,7 +50,6 @@
                             echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;{$row["username"]}</td>";
                             echo "<td>{$row["reputation"]}</td>";
                             echo "<td>{$row["posts"]}</td>";
-                            echo "<td>" . date("m-d-y", $row["joindate"]) . "</td>";
                             echo "<td>{$row["score"]}</td>";
                             echo "<td><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";
