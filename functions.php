@@ -334,4 +334,26 @@ function getVal($userid, $fieldname) {
 
     return $info->$fieldname;
 }
+
+// Returns X number of days of stats history per user.
+function getHistory($userid, $results) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `history` WHERE `userid` = ? ORDER BY `cycle` DESC LIMIT $results");
+    $statement->execute(array($userid));
+
+    $entry = 0;
+    while ($info = $statement->fetchObject()) {
+        $data[$entry]["username"] = $info->username;
+        $data[$entry]["date"] = $info->date;
+        $data[$entry]["cycle"] = $info->cycle;
+        $data[$entry]["avatar"] = $info->avatar;
+        $data[$entry]["rank"] = $info->rank;
+        $data[$entry]["score"] = $info->score;
+        $data[$entry]["posts"] = $info->posts;
+        $data[$entry]["reputation"] = $info->reputation;
+        $data[$entry]["loggedon"] = $info->loggedon;
+        ++$entry;
+    }
+    return $data;
+}
 ?>
