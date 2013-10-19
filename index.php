@@ -59,7 +59,14 @@
                 </table>
             </div>
             <div class="col-md-4">
-                <p>Score is calculated by: <br>reputation * (posts/minutes since joining)<br><br>Users are ranked by their score.</p>
+                <p>Users receive points via the following criteria: <br>
+                    <ul>
+                        <li>Post: 10 points.</li>
+                        <li>Rep Point: 25 points.</li>
+                        <li>Logged on in past 24 hours: 5 points.</li>
+                    </ul>
+                    Scores are calculated daily.
+                </p>
             </div>
         </div>
         <div class="row footer">
