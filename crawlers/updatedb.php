@@ -65,7 +65,8 @@ for ($a = 0; $a < PAGES; $a++) {
 		addEntry($userid[$c], $names[$c], $date, ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $status[$c]);
 		calculateTotals($userid[$c]);
 	}
-
+	
+	updateHistoryRanks();
     updateRanks();
 
     echo "Fetched, saved, and updated " . ($a+1)*20 . " / " . PAGES*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";

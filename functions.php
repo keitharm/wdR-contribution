@@ -301,7 +301,7 @@ function updateRanks() {
     }
 }
 
-// Update the ranks of user's in the history's table
+// Update the ranks of user's in the history's table by changing the rank of the most recent cycle
 function updateHistoryRanks() {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` ORDER BY `score` DESC");
