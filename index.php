@@ -17,7 +17,7 @@
 
     <?php
         $db = database();
-        $statement = $db->query("SELECT * FROM total ORDER BY rank asc LIMIT 100");
+        $statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT 100");
         $statement->setFetchMode(PDO::FETCH_ASSOC);
     ?>
 </head>

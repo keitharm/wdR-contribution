@@ -2,7 +2,7 @@
 // Configuration values for DB connection
 require_once("config.php");
 
-// All Functions below this line //
+// All functions below this line //
 function database() {
     global $config;
     $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config['db']['dbname'], $config['db']['username'], $config['db']['password']);
@@ -64,7 +64,7 @@ function findall($needle, $haystack) {
 // Does the user exists in the total table
 function userExists($userid) {
     $db = database();
-    $statement = $db->prepare("SELECT * FROM total WHERE `userid` = ?");
+    $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
     $statement->execute(array($userid));
     $info = $statement->FetchObject();
     if ($info != null) {
@@ -76,7 +76,7 @@ function userExists($userid) {
 // Does the user exists in the base table
 function userExistsBase($userid) {
     $db = database();
-    $statement = $db->prepare("SELECT * FROM base WHERE `userid` = ?");
+    $statement = $db->prepare("SELECT * FROM `base` WHERE `userid` = ?");
     $statement->execute(array($userid));
     $info = $statement->FetchObject();
     if ($info != null) {

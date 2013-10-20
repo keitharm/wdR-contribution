@@ -29,7 +29,7 @@ $cycle = getLastCycle();
 // Fetch and extract data
 echo "\nFetching data from wdR...\n";
 
-// Loop check is true until it reaches member with 0 posts
+// Loop check is true until it reaches member with 4 posts
 $loop = true;
 for ($a = 0; $a < PAGES; $a++) {
 	if (!$loop) {

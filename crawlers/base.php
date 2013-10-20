@@ -26,7 +26,7 @@ echo "Estimated actual results: \t\t" . round((PAGES*20)*.0722) . "\n";
 echo "\nFetching data from wdR...\n";
 
 $old = 0;
-// Loop check is true until it reaches member with 0 posts
+// Loop check is true until it reaches member with 4 posts
 $loop = true;
 for ($a = 0; $a < PAGES; $a++) {
 	if (!$loop) {
