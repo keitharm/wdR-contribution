@@ -7,8 +7,12 @@ require_once("../functions.php");
 
 # Base URL
 define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
+
+$tmp_data = file_get_contents(URL);
+$numofpages = extractData($tmp_data, "Page 1 of ", " <!--<img", 1);
+
 # Number of pages to extract
-define("PAGES", 10);
+define("PAGES", $numofpages);
 
 echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
@@ -62,13 +66,15 @@ for ($a = 0; $a < PAGES; $a++) {
 	// Add new stats within this 24 hour period to history and
 	// calculate new totals by adding up user's previous 24h history periods
 	for ($c = 0; $c < 20; $c++) {
-		addEntry($userid[$c], $names[$c], $date, ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $status[$c]);
-		calculateTotals($userid[$c]);
+		if (userExistsBase($userid[$c])) {
+			addEntry($userid[$c], $names[$c], $date, ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $status[$c]);
+			calculateTotals($userid[$c]);
+		}
 	}
 	
 	updateHistoryRanks();
     updateRanks();
 
-    echo "Fetched, saved, and updated " . ($a+1)*20 . " / " . PAGES*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
+    echo "Fetched, saved, and updated " . ($a+1)*20 . " / " . PAGES*20 . " acceptable member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
 }
 ?>

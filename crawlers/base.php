@@ -30,6 +30,7 @@ for ($a = 0; $a < PAGES; $a++) {
 	$posts = extractData($data, "</span><span class='left'>", "</span>");
 	$userid = extractData($data, "<li id='member_id_", "' class='ipsP");
 
+	$old = 0;
 	for ($b = 0; $b < 20; $b++) {
 		// Add user base values to DB if they have at least 1 post and aren't in the base table
 		if ($posts[$b] > 0 && !userExistsBase($userid[$b])) {
