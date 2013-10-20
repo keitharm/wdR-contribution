@@ -336,7 +336,7 @@ function getVal($userid, $fieldname) {
 }
 
 // Returns X number of days of stats history per user.
-function getHistory($userid, $results) {
+function getHistory($userid, $results = 5) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `history` WHERE `userid` = ? ORDER BY `cycle` DESC LIMIT $results");
     $statement->execute(array($userid));
@@ -355,5 +355,84 @@ function getHistory($userid, $results) {
         ++$entry;
     }
     return $data;
+}
+
+// Return rank change of history vs current
+function getRankChange($userid) {
+    $history = getHistory($userid, 2); 
+
+    if ($history == null || count($history) < 2) {
+        return "--";
+    }
+
+    $past = $history[1][rank];
+    $current = $history[0][rank];
+
+    // Rank went up
+    if ($current < $past) {
+        return "<img src='images/green_up_arrow.png'>" . ($past-$current);
+    }
+    // Rank went down
+    else if ($current > $past) {
+        return "<img src='images/red_down_arrow.png'>" . ($current-$past);
+    } else {
+        return "--";
+    }
+}
+
+function getUpdateDate() {
+    $db = database();
+    $statement = $db->prepare("SELECT `date` FROM history ORDER BY cycle DESC LIMIT 1");
+    $statement->execute();
+    $info = $statement->fetchObject();
+
+    return $info->date;
+}
+
+function timeconv($timestamp, $about = false) {
+    $elapsed = time() - $timestamp;
+
+    if ($about == true) {
+        $about = "About ";
+    }
+    if ($elapsed == 0) {
+        $data = "Just now";
+    }
+
+    // Seconds
+    elseif ($elapsed < 60) {
+        if ($elapsed != 1) {
+            $s = "s";
+        }
+        $data = $about . $elapsed . " second" . $s . " ago";
+    }
+
+    // Minutes
+    elseif ($elapsed < 60*60) {
+        if ($elapsed >= 60*2) {
+            $s = "s";
+        }
+        $data = $about . floor($elapsed/60) . " minute" . $s . " ago";
+    }
+
+    // Hours
+    elseif ($elapsed < 60*60*24) {
+        if ($elapsed >= 60*60*2) {
+            $s = "s";
+        }
+        $data = $about . floor($elapsed/(60*60)) . " hour" . $s . " ago";
+    }
+    
+    // Days
+    elseif ($elapsed < 60*60*24*7) {
+        if ($elapsed >= 60*60*24*2) {
+            $s = "s";
+        }
+        $data = $about . floor($elapsed/(60*60*24)) . " day" . $s . " ago";
+    } else {
+        $data = date("m-d-Y", $timestamp);
+    }
+
+    return "<span title='" . date("F j, Y, g:i a", $timestamp) . "'>" . $data . "</span>";
 }
 ?>
