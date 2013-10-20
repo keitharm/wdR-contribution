@@ -15,8 +15,10 @@ $numofpages = extractData($tmp_data, "Page 1 of ", " <!--<img", 1);
 define("PAGES", $numofpages);
 
 echo "--------------Settings--------------\n";
-echo "Pages to fetch: \t\t" . PAGES . "\n";
-echo "Total expected results: \t" . PAGES*20 . "\n";
+echo "Total Pages to fetch: \t\t\t" . PAGES . "\n";
+echo "Total results: \t\t\t\t" . PAGES*20 . "\n";
+echo "Estimated actual pages to fetch: \t" . round(((PAGES*20)*.0722)/20) . "\n";
+echo "Estimated actual results: \t\t" . round((PAGES*20)*.0722) . "\n";
 
 // Constant date for when we add new entries to history list
 $date = time();
@@ -26,7 +28,13 @@ $cycle = getLastCycle();
 
 // Fetch and extract data
 echo "\nFetching data from wdR...\n";
+
+// Loop check is true until it reaches member with 0 posts
+$loop = true;
 for ($a = 0; $a < PAGES; $a++) {
+	if (!$loop) {
+		break;
+	}
 	$data = file_get_contents(URL . $a*20);
 
 	// Initialize/Emptry status array
@@ -38,6 +46,11 @@ for ($a = 0; $a < PAGES; $a++) {
 	$posts = extractData($data, "</span><span class='left'>", " posts</span>");
 	$avatars = extractData($data, "left'><img src='", "' alt=");
 	$userid = extractData($data, "<li id='member_id_", "' class='ipsP");
+
+	// Break out of loop next time it goes around
+	if (in_array(4, $posts)) {
+		$loop = false;
+	}
 
 	// Find out if user has logged in within last 24 hours.
 	foreach ($userid as $id) {
@@ -75,6 +88,6 @@ for ($a = 0; $a < PAGES; $a++) {
 	updateHistoryRanks();
     updateRanks();
 
-    echo "Fetched, saved, and updated " . ($a+1)*20 . " / " . PAGES*20 . " acceptable member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
+    echo "Fetched, saved, and updated " . ((($a+1)*20)-$old) . " / " . round((PAGES*20)*.0722) . " acceptable member profiles\t(" . round((($a+1)/round(((PAGES*20)*.0722)/20))*100,2 ) . "% complete)\n";
 }
 ?>

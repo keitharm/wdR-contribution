@@ -68,8 +68,9 @@
                         <li>Rep Point: 25 points.</li>
                         <li>Logged on in past 24 hours: 5 points.</li>
                     </ul>
+                <p>Users must have at least <b>5</b> posts in order to make it onto the leaderboards.</p>
                     Scores are calculated daily.<br>
-                    Calculating stats since <?=date("F j, Y", START_TIME)?><br>
+                    Calculating stats since <?=date("F j, Y", START_TIME)?><br><br><br>
                     Last calculated <b><?=timeconv(getUpdateDate())?>.</b>
                     <p class="text-muted">Full source available on <a href='https://github.com/solewolf/wdR-contribution/'>Github</a></p>
                 </p>
