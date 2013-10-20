@@ -9,8 +9,12 @@ require_once("../functions.php");
 
 # Base URL
 define("URL", "http://webdevrefinery.com/forums/members/?sort_key=joined&sort_order=asc&max_results=20&st=");
+
+$tmp_data = file_get_contents(URL);
+$numofpages = extractData($tmp_data, "Page 1 of ", " <!--<img", 1);
+
 # Number of pages to extract
-define("PAGES", 547);
+define("PAGES", $numofpages);
 
 echo "--------------Settings--------------\n";
 echo "Pages to fetch: \t\t" . PAGES . "\n";
@@ -27,10 +31,14 @@ for ($a = 0; $a < PAGES; $a++) {
 	$userid = extractData($data, "<li id='member_id_", "' class='ipsP");
 
 	for ($b = 0; $b < 20; $b++) {
-		// Add user base values to DB
-		addUserBase($userid[$b], $posts[$b], $reps[$b]);
+		// Add user base values to DB if they have at least 1 post and aren't in the base table
+		if ($posts[$b] > 0 && !userExistsBase($userid[$b])) {
+			addUserBase($userid[$b], $posts[$b], $reps[$b]);
+		} else {
+			++$old;
+		}
 	}
-    echo "Fetched and saved " . ($a+1)*20 . " / " . PAGES*20 . " member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "%)\n";
+    echo "Fetched and saved " . ((($a+1)*20)-$old) . " / " . PAGES*20 . " acceptable member profiles\t(" . round((($a+1)/PAGES)*100,2 ) . "% complete)\n";
 }
 
 function addUserBase($userid, $posts, $reputation) {

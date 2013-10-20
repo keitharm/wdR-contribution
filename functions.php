@@ -73,6 +73,18 @@ function userExists($userid) {
     return 0;
 }
 
+// Does the user exists in the base table
+function userExistsBase($userid) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM base WHERE `userid` = ?");
+    $statement->execute(array($userid));
+    $info = $statement->FetchObject();
+    if ($info != null) {
+        return 1;
+    }
+    return 0;
+}
+
 // LOL!
 function searchForWordsInString($data, $values) {
     $found = array();
