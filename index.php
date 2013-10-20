@@ -69,7 +69,9 @@
                         <li>Logged on in past 24 hours: 5 points.</li>
                     </ul>
                     Scores are calculated daily.<br>
-                    Last calculated <b><?=timeconv(getUpdateDate())?></b>
+                    Calculating stats since <?=date("F j, Y", START_TIME)?><br>
+                    Last calculated <b><?=timeconv(getUpdateDate())?>.</b>
+                    <p class="text-muted">Full source available on <a href='https://github.com/solewolf/wdR-contribution/'>Github</a></p>
                 </p>
             </div>
         </div>
