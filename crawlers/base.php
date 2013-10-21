@@ -7,23 +7,27 @@
 set_time_limit(0);
 require_once("../functions.php");
 
-# Base URL
-define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
-
-$tmp_data = file_get_contents(URL);
-$numofpages = extractData($tmp_data, "Page 1 of ", " <!--<img", 1);
-
 # Number of pages to extract
-define("PAGES", $numofpages);
+define("PAGES", numofpages());
 
 echo "--------------Settings--------------\n";
 echo "Total Pages to fetch: \t\t\t" . PAGES . "\n";
 echo "Total results: \t\t\t\t" . PAGES*20 . "\n";
-echo "Estimated actual pages to fetch: \t" . round(((PAGES*20)*.0722)/20) . "\n";
-echo "Estimated actual results: \t\t" . round((PAGES*20)*.0722) . "\n";
+echo "Estimated actual pages to fetch: \t" . round(((PAGES*20)*POSTS_RATIO)/20) . "\n";
+echo "Estimated actual results: \t\t" . round((PAGES*20)*POSTS_RATIO) . "\n";
 
 // Fetch and extract data
 echo "\nFetching data from wdR...\n";
+
+// Start ETA timer
+$eta_start = timer();
+
+// ETA calculations
+$eta_times = array();
+$eta_old = $eta_start;
+$eta_raw = 0;
+$eta = "--:--";
+$eta_str = "--:--";
 
 $old = 0;
 // Loop check is true until it reaches member with 4 posts
@@ -32,6 +36,14 @@ for ($a = 0; $a < PAGES; $a++) {
 	if (!$loop) {
 		break;
 	}
+	// ETA updater
+	if ($eta_raw != 0) {
+		$min = floor($eta_raw/60);
+		$secs = ($eta_raw - ($min*60));
+		$eta = sprintf("%02s", $min) . ":" . sprintf("%02s", $secs);
+		$eta_str = date("H:i:s", time()+$eta_raw);
+	}
+
 	$data = file_get_contents(URL . $a*20);
 
 	// Extract user data from members list
@@ -51,8 +63,13 @@ for ($a = 0; $a < PAGES; $a++) {
 			++$old;
 		}
 	}
-    echo "Fetched and saved " . ((($a+1)*20)-$old) . " / " . round((PAGES*20)*.0722) . " acceptable member profiles\t(" . round((($a+1)/round(((PAGES*20)*.0722)/20))*100,2 ) . "% complete)\n";
+    echo "Fetched and saved " . ((($a+1)*20)-$old) . " / " . round((PAGES*20)*POSTS_RATIO) . " acceptable member profiles\t(" . round(($a+1)/round(((PAGES*20)*POSTS_RATIO/20))*100,2) . "% complete |\tETA " . $eta . " - " . $eta_str . ")\n";
+    $eta_new = timer();
+    $eta_times[] = $eta_new - $eta_old;
+    $eta_raw = round(((array_avg($eta_times))*(round(((PAGES*20)*POSTS_RATIO)/20)-($a+1))));
+    $eta_old = $eta_new;
 }
+echo "A total of " . ((($a)*20)-$old) . " new members were added in " . round($eta_new-$eta_start) . " seconds.\n";
 
 function addUserBase($userid, $posts, $reputation) {
     $db = database();

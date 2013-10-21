@@ -1,5 +1,5 @@
 <?php
-// Configuration values for DB connection
+// Configuration values
 require_once("config.php");
 
 // All functions below this line //
@@ -446,5 +446,24 @@ function timeconv($timestamp, $about = false) {
     }
 
     return "<span title='" . date("F j, Y, g:i a", $timestamp) . "'>" . $data . "</span>";
+}
+
+// For ETAs and PHP5-less servers
+function timer() {
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+}
+
+// Number of pages in wdR members list
+function numOfPages() {
+    $tmp_data = file_get_contents(URL);
+    $numofpages = extractData($tmp_data, "Page 1 of ", " <!--<img", 1);
+
+    return $numofpages;
+}
+
+// Average of values in array
+function array_avg($array) {
+    return round(array_sum($array)/count($array), 2);
 }
 ?>
