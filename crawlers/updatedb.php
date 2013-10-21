@@ -96,9 +96,6 @@ for ($a = 0; $a < PAGES; $a++) {
 			calculateTotals($userid[$c]);
 		}
 	}
-	
-	updateHistoryRanks();
-    updateRanks();
 
     echo "Fetched, saved, and updated " . ((($a+1)*20)-$old) . " / " . round((PAGES*20)*POSTS_RATIO) . " acceptable member profiles\t(" . round(($a+1)/round(((PAGES*20)*POSTS_RATIO/20))*100,2) . "% complete |\tETA " . $eta . " - " . $eta_str . ")\n";
     $eta_new = timer();
@@ -106,5 +103,12 @@ for ($a = 0; $a < PAGES; $a++) {
     $eta_raw = round(((array_avg($eta_times))*(round(((PAGES*20)*POSTS_RATIO)/20)-($a+1))));
     $eta_old = $eta_new;
 }
+
+echo "Updating History Rankings...\n";
+updateHistoryRanks();
+
+echo "Updating Current Rankings...\n";
+updateRanks();
+
 echo "A total of " . ((($a)*20)-$old) . " members stats were updated in " . round($eta_new-$eta_start) . " seconds.\n";
 ?>
