@@ -14,9 +14,6 @@ echo "Total results: \t\t\t\t" . PAGES*20 . "\n";
 echo "Estimated actual pages to fetch: \t" . round(((PAGES*20)*POSTS_RATIO)/20) . "\n";
 echo "Estimated actual results: \t\t" . round((PAGES*20)*POSTS_RATIO) . "\n";
 
-// Constant date for when we add new entries to history list
-$date = time();
-
 // What cycle are we on? (Cycle count goes up every daily data fetch from wdR)
 $cycle = getLastCycle();
 
@@ -92,7 +89,7 @@ for ($a = 0; $a < PAGES; $a++) {
 	// calculate new totals by adding up user's previous 24h history periods
 	for ($c = 0; $c < 20; $c++) {
 		if (userExistsBase($userid[$c])) {
-			addEntry($userid[$c], $names[$c], $date, ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $status[$c]);
+			addEntry($userid[$c], $names[$c], time(), ($cycle+1), $avatars[$c], $posts[$c], $reps[$c], $status[$c]);
 			calculateTotals($userid[$c]);
 		}
 	}

@@ -172,11 +172,11 @@ function addEntry($userid, $username, $date, $cycle, $avatar, $posts, $reputatio
     // current - total - base gets daily difference
     $posts = $posts - getTotal($userid, "posts") - getBase($userid, "posts");
     $reputation = $reputation - getTotal($userid, "reputation") - getBase($userid, "reputation");
-    $score = $posts*10 + $reputation*25 + $loggedon*5;
+    $points = $posts*10 + $reputation*25 + $loggedon*5;
 
     $db = database();
-    $statement = $db->prepare("INSERT INTO `history` (`userid`, `username`, `date`, `cycle`, `avatar`, `score`, `posts`, `reputation`, `loggedon`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $statement->execute(array($userid, $username, $date, $cycle, $avatar, $score, $posts, $reputation, $loggedon));
+    $statement = $db->prepare("INSERT INTO `history` (`userid`, `username`, `date`, `cycle`, `avatar`, `points`, `posts`, `reputation`, `loggedon`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $statement->execute(array($userid, $username, $date, $cycle, $avatar, $points, $posts, $reputation, $loggedon));
 }
 
 // Get base values of a user
@@ -244,7 +244,7 @@ function calculateTotals($userid) {
     $first = true;
 
     // actually defines the variables before beginning loop so that the loop has something to "add to"
-    $score = 0;
+    $points = 0;
     $posts = 0;
     $reputation = 0;
     $logins = 0;
@@ -257,7 +257,7 @@ function calculateTotals($userid) {
             $first = false;
         }
         // Add up totals
-        $score += $info->score;
+        $points += $info->points;
         $posts += $info->posts;
         $reputation += $info->reputation;
         $logins += $info->loggedon;
@@ -267,19 +267,25 @@ function calculateTotals($userid) {
     $timedif = ceil((time() - START_TIME) / 86400);
     $ppd = round($posts / $timedif, 2);
 
+    // Calculate Activity
+    $activity = round($logins / getLastCycle(), 2);
+
+    // Calculate score
+    $score = $activity * $points;
+
     // Update total values
-    updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins);
+    updateTotals($userid, $username, $score, $points, $posts, $reputation, $ppd, $avatar, $logins, $activity);
 }
 
 // Update Total's table values
-function updateTotals($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins) {
+function updateTotals($userid, $username, $score, $points, $posts, $reputation, $ppd, $avatar, $logins, $activity) {
     $db = database();
     if (!userExists($userid)) {
-        $statement = $db->prepare("INSERT INTO `total` (`userid`, `username`, `score`, `posts`, `reputation`, `ppd`, `avatar`, `logins`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $statement->execute(array($userid, $username, $score, $posts, $reputation, $ppd, $avatar, $logins));
+        $statement = $db->prepare("INSERT INTO `total` (`userid`, `username`, `score`, `points`, `posts`, `reputation`, `ppd`, `avatar`, `logins`, `activity`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $statement->execute(array($userid, $username, $points, $posts, $reputation, $ppd, $avatar, $logins, $activity));
     } else {
-        $statement = $db->prepare("UPDATE `total` SET `username`=?, `score`=?, `posts`=?, `reputation`=?, `ppd`=?, `avatar`=?, `logins`=? WHERE `userid`=?");
-        $statement->execute(array($username, $score, $posts, $reputation, $ppd, $avatar, $logins, $userid));
+        $statement = $db->prepare("UPDATE `total` SET `username`=?, `score`=?, `points`=?, `posts`=?, `reputation`=?, `ppd`=?, `avatar`=?, `logins`=?, `activity`=? WHERE `userid`=?");
+        $statement->execute(array($username, $score, $points, $posts, $reputation, $ppd, $avatar, $logins, $activity, $userid));
     }
 }
 
@@ -301,7 +307,7 @@ function id_to_username($userid) {
     return $info->username;
 }
 
-// Update rankings of user's in total's table
+// Update rankings of users in total table
 function updateRanks() {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` ORDER BY `score` DESC");
@@ -313,7 +319,7 @@ function updateRanks() {
     }
 }
 
-// Update the ranks of user's in the history's table by changing the rank of the most recent cycle
+// Update the ranks of users in the history table by changing the rank of the most recent cycle
 function updateHistoryRanks() {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` ORDER BY `score` DESC");
@@ -323,21 +329,21 @@ function updateHistoryRanks() {
     }
 }
 
-// Change value of user in total's table
+// Change value of user in total table
 function changeVal($userid, $fieldname, $value) {
     $db = database();
     $statement = $db->prepare("UPDATE `total` SET `$fieldname` = ? WHERE `userid` = ?");
     $statement->execute(array($value, $userid));
 }
 
-// Change value of user in history's table
+// Change value of user in history table
 function changeHistoryVal($userid, $fieldname, $value) {
     $db = database();
     $statement = $db->prepare("UPDATE `history` SET `$fieldname` = ? WHERE `userid` = ? AND `cycle` = ?");
     $statement->execute(array($value, $userid, getLastCycle()));
 }
 
-// Get uservale from total's table
+// Get userval from total table
 function getVal($userid, $fieldname) {
     $db = database();
     $statement = $db->prepare("SELECT * FROM `total` WHERE `userid` = ?");
@@ -360,7 +366,7 @@ function getHistory($userid, $results = 5) {
         $data[$entry]["cycle"] = $info->cycle;
         $data[$entry]["avatar"] = $info->avatar;
         $data[$entry]["rank"] = $info->rank;
-        $data[$entry]["score"] = $info->score;
+        $data[$entry]["points"] = $info->points;
         $data[$entry]["posts"] = $info->posts;
         $data[$entry]["reputation"] = $info->reputation;
         $data[$entry]["loggedon"] = $info->loggedon;
@@ -372,6 +378,9 @@ function getHistory($userid, $results = 5) {
 // Return rank change of history vs current
 function getRankChange($userid) {
     $history = getHistory($userid, 1); 
+    if (getUpdateDate() == "stats are currently being updated...") {
+        return "--";
+    }
 
     if ($history == null || count($history) < 1) {
         return "--";
@@ -394,11 +403,23 @@ function getRankChange($userid) {
 
 function getUpdateDate() {
     $db = database();
-    $statement = $db->prepare("SELECT `date` FROM history ORDER BY cycle DESC LIMIT 1");
+    $statement = $db->prepare("SELECT COUNT(*) FROM `history` WHERE `cycle` = ?");
+    $statement->execute(array(getLastCycle()));
+
+    $info = $statement->fetchAll();
+    $cycleTotal = $info[0][0];
+    $total = totalUsers();
+
+    if ($cycleTotal != $total) {
+        return "stats are currently being updated...";
+    }
+
+    $db = database();
+    $statement = $db->prepare("SELECT `date` FROM history ORDER BY cycle DESC, `date` DESC LIMIT 1");
     $statement->execute();
     $info = $statement->fetchObject();
 
-    return $info->date;
+    return timeconv($info->date);
 }
 
 function timeconv($timestamp, $about = false) {
@@ -412,7 +433,7 @@ function timeconv($timestamp, $about = false) {
     }
 
     // Seconds
-    elseif ($elapsed < 60) {
+    else if ($elapsed < 60) {
         if ($elapsed != 1) {
             $s = "s";
         }
@@ -420,7 +441,7 @@ function timeconv($timestamp, $about = false) {
     }
 
     // Minutes
-    elseif ($elapsed < 60*60) {
+    else if ($elapsed < 60*60) {
         if ($elapsed >= 60*2) {
             $s = "s";
         }
@@ -428,7 +449,7 @@ function timeconv($timestamp, $about = false) {
     }
 
     // Hours
-    elseif ($elapsed < 60*60*24) {
+    else if ($elapsed < 60*60*24) {
         if ($elapsed >= 60*60*2) {
             $s = "s";
         }
@@ -436,7 +457,7 @@ function timeconv($timestamp, $about = false) {
     }
     
     // Days
-    elseif ($elapsed < 60*60*24*7) {
+    else if ($elapsed < 60*60*24*7) {
         if ($elapsed >= 60*60*24*2) {
             $s = "s";
         }
@@ -465,5 +486,72 @@ function numOfPages() {
 // Average of values in array
 function array_avg($array) {
     return round(array_sum($array)/count($array), 2);
+}
+
+function totalUsers() {
+    $db = database();
+    $statement = $db->prepare("SELECT COUNT(*) FROM total");
+    $statement->execute();
+    $info = $statement->fetchAll();
+
+    return $info[0][0];
+}
+
+function fixPage($page) {
+    // Total Pages of users
+    $total = ceil(totalUsers()/25);
+
+    if ($page < 1 || $page == null) {
+        $page = 1;
+    }
+
+    if ($page > $total) {
+        $page = $total;
+    }
+
+    return (($page-1)*25);
+}
+
+function rankColor($rank) {
+    switch ($rank) {
+        case 1:
+            return "<font color='gold'>1</font>";
+        case 2:
+            return "<font color='silver'>2</font>";
+        case 3:
+            return "<font color='saddlebrown'>3</font>";
+        default:
+            return $rank;
+    }
+}
+
+function pageControls($page) {
+    if ($page == null) {
+        $page = 1;
+    }
+
+    $total = ceil(totalUsers()/25);
+    $main = "Page " . ($page) . " of " . $total;
+
+    // Default non-links
+    $prev = "<";
+    $prevprev = "<<";
+    $next = ">";
+    $nextnext = ">>";
+
+    if ($page >= 2) {
+        $prev = "<a href='index.php?page=" . ($page-1) . "'><</a>";
+    }
+    if ($page >= 3) {
+        $prevprev = "<a href='index.php?page=1'><<</a>";
+    }
+    if ($total - $page >= 1) {
+        $next = "<a href='index.php?page=" . ($page+1) . "'>></a>";
+    }
+    if ($total - $page >= 2) {
+        $nextnext = "<a href='index.php?page=" . $total . "'>>></a>";
+    }
+    $main = $prevprev . "&nbsp;&nbsp;" . $prev . "&nbsp;&nbsp;" . $main . "&nbsp;&nbsp;" . $next . "&nbsp;&nbsp;" . $nextnext;
+    return $main;
 }
 ?>

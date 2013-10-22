@@ -8,3 +8,6 @@
     color:white;
     font-weight: bold;
 }
+#rank th {
+	text-align: center;
+}
