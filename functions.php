@@ -371,14 +371,14 @@ function getHistory($userid, $results = 5) {
 
 // Return rank change of history vs current
 function getRankChange($userid) {
-    $history = getHistory($userid, 2); 
+    $history = getHistory($userid, 1); 
 
-    if ($history == null || count($history) < 2) {
+    if ($history == null || count($history) < 1) {
         return "--";
     }
 
-    $past = $history[1][rank];
-    $current = $history[0][rank];
+    $past = $history[0][rank];
+    $current = getVal($userid, "rank");
 
     // Rank went up
     if ($current < $past) {

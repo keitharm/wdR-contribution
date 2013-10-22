@@ -38,9 +38,9 @@ for ($a = 0; $a < PAGES; $a++) {
 	}
 	// ETA updater
 	if ($eta_raw != 0) {
-		$min = floor($eta_raw/60);
-		$secs = ($eta_raw - ($min*60));
-		$eta = sprintf("%02s", $min) . ":" . sprintf("%02s", $secs);
+		$mins = floor($eta_raw/60);
+		$secs = ($eta_raw - ($mins*60));
+		$eta = sprintf("%02s", $mins) . ":" . sprintf("%02s", $secs);
 		$eta_str = date("H:i:s", time()+$eta_raw);
 	}
 
