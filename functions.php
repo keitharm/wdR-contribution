@@ -526,11 +526,18 @@ function rankColor($rank) {
 }
 
 function pageControls($page) {
+    $total = ceil(totalUsers()/25);
+
     if ($page == null) {
         $page = 1;
     }
+    if ($page < 1) {
+        $page = 1;
+    }
+    if ($page > $total) {
+        $page = $total;
+    }
 
-    $total = ceil(totalUsers()/25);
     $main = "Page " . ($page) . " of " . $total;
 
     // Default non-links
