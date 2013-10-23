@@ -18,9 +18,17 @@
     <?php
         $db = database();
         $page = fixPage($_GET['page']);
-        if ($_GET['do'] == "search") {
-            $statement = $db->prepare("SELECT * FROM `total` WHERE `username` = ?");
-            $statement->execute(array($_POST['user']));
+        if ($_GET['do'] == "search" && $_POST['user'] != null) {
+            $count = $db->query("SELECT COUNT(*) FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%'");
+            $count = $count->fetchAll();
+            $count = $count[0][0];
+
+            if ($count == 1) {
+                $result_text = "<quote>1 match found</quote>";
+            } else {
+                $result_text = "<quote>" . $count . " matches found</quote>";
+            }
+            $statement = $db->query("SELECT * FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%' ORDER BY `rank` ASC LIMIT 25");
         } else {
             $statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT $page, 25");
         }
@@ -42,8 +50,13 @@
             <div class="col-md-8">
                 <table class="table table-hover" id="rank">
                 <form action='index.php?do=search' method='POST'>
-                    <tr><td colspan='5' align='left'><?php if ($_GET['do'] != "search") echo pageControls($_GET['page']) ?></td><td colspan='4' align='right'><input type='text' name='user' placeholder='Username' value='<?php echo $_POST["user"] ?>' autofocus>&nbsp;&nbsp;&nbsp;<input type='submit' value='Search'></td></tr>
+                    <tr><td colspan='3' align='left'><?php if ($_GET['do'] != "search" || ($_GET['do'] == "search" && $_POST['user'] == null)) echo pageControls($_GET['page']) ?></td><td colspan='6' align='right'><?php echo $result_text ?>&nbsp;&nbsp;&nbsp;<input type='text' name='user' placeholder='Username' value='<?php echo $_POST["user"] ?>' autofocus>&nbsp;&nbsp;&nbsp;<input type='submit' value='Search'></td></tr>
                 </form>
+                    <?php
+                        if ($_GET['do'] == "search" && $count > 25) {
+                            echo "<tr><td colspan='9' align='center'><font color='red'>Your search returned over 25 results. Please be more specific.</font></td></tr>";
+                        }
+                    ?>
                     <tr>
                         <th>Rank</th>
                         <th>Change</th>
@@ -56,9 +69,7 @@
                         <th>Signature</th>
                     </tr>
                     <?php
-                        if ($_GET['do'] == "search" && !userExists(username_to_id($_POST['user']))) {
-                            echo "<tr><td colspan='9' align='center'>User was not found</td></tr>";
-                        }
+                        $users = 0;
                         while ($row = $statement->fetch()) {
                             echo "<tr>";
                             echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
@@ -71,7 +82,13 @@
                             echo "<td align='center'>" . $row["activity"]*100 . "%</td>";
                             echo "<td align='center'><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";
-                            $rank++;
+                            $users++;
+                        }
+                        if ($users == 0) {
+                            echo "<tr><td colspan='9' align='center'>User was not found</td></tr>";
+                        }
+                        if ($_GET['do'] == "search" && $count > 25) {
+                            echo "<tr><td colspan='9' align='center'>. . . . .</td></tr>";
                         }
                     ?>
                 </table>
@@ -106,3 +123,4 @@
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
+
