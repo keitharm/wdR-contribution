@@ -282,7 +282,7 @@ function updateTotals($userid, $username, $score, $points, $posts, $reputation, 
     $db = database();
     if (!userExists($userid)) {
         $statement = $db->prepare("INSERT INTO `total` (`userid`, `username`, `score`, `points`, `posts`, `reputation`, `ppd`, `avatar`, `logins`, `activity`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $statement->execute(array($userid, $username, $points, $posts, $reputation, $ppd, $avatar, $logins, $activity));
+        $statement->execute(array($userid, $username, $score, $points, $posts, $reputation, $ppd, $avatar, $logins, $activity));
     } else {
         $statement = $db->prepare("UPDATE `total` SET `username`=?, `score`=?, `points`=?, `posts`=?, `reputation`=?, `ppd`=?, `avatar`=?, `logins`=?, `activity`=? WHERE `userid`=?");
         $statement->execute(array($username, $score, $points, $posts, $reputation, $ppd, $avatar, $logins, $activity, $userid));
