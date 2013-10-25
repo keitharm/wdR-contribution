@@ -561,4 +561,14 @@ function pageControls($page) {
     $main = $prevprev . "&nbsp;&nbsp;" . $prev . "&nbsp;&nbsp;" . $main . "&nbsp;&nbsp;" . $next . "&nbsp;&nbsp;" . $nextnext;
     return $main;
 }
+
+function userColor($id, $username) {
+    if (in_array($id, array(1, 2))) {
+        return "<font color='red'><b>" . $username . "</b></font>";
+    } else if (in_array($id, array(602, 3291, 3008, 5574, 4637))) {
+        return "<font color='#f94'><b>" . $username . "</b></font>";
+    } else {
+        return $username;
+    }
+}
 ?>
