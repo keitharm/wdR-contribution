@@ -401,6 +401,40 @@ function getRankChange($userid) {
     }
 }
 
+// Return post change of history vs current
+function getPostChange($userid) {
+    $history = getHistory($userid, 1); 
+    if (getUpdateDate() == "stats are currently being updated...") {
+        return "";
+    }
+
+    if ($history == null || count($history) < 1) {
+        return "";
+    }
+
+    $past = $history[0][posts];
+    if ($past != 0) {
+        return "<font color='#28D308'>+" . $past;
+    }
+}
+
+// Return rep change of history vs current
+function getRepChange($userid) {
+    $history = getHistory($userid, 1); 
+    if (getUpdateDate() == "stats are currently being updated...") {
+        return "";
+    }
+
+    if ($history == null || count($history) < 1) {
+        return "";
+    }
+
+    $past = $history[0][reputation];
+    if ($past != 0) {
+        return "<font color='#28D308'>+" . $past;
+    }
+}
+
 function getUpdateDate() {
     $db = database();
     $statement = $db->prepare("SELECT COUNT(*) FROM `history` WHERE `cycle` = ?");

@@ -77,8 +77,8 @@
                             echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='http://webdevrefinery.com/forums/user/{$row["userid"]}-{$row["username"]}'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
                             echo "<td align='center'>{$row["score"]}</td>";
                             echo "<td align='center'>{$row["points"]}</td>";
-                            echo "<td align='center'>{$row["posts"]}</td>";
-                            echo "<td align='center'>{$row["reputation"]}</td>";
+                            echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
+                            echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["activity"]*100 . "%</td>";
                             echo "<td align='center'><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";
