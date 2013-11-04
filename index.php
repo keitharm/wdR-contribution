@@ -76,7 +76,7 @@
                             echo "<td align='center'>" . getRankChange($row["userid"]) . "</td>";
                             echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='http://webdevrefinery.com/forums/user/{$row["userid"]}-{$row["username"]}'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
                             echo "<td align='center'>{$row["score"]}</td>";
-                            echo "<td align='center'>{$row["points"]}</td>";
+                            echo "<td align='center'>" . $row["points"] . " " . getPointsChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["activity"]*100 . "%</td>";
@@ -123,4 +123,3 @@
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
-
