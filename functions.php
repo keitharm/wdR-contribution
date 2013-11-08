@@ -268,13 +268,22 @@ function calculateTotals($userid) {
     $ppd = round($posts / $timedif, 2);
 
     // Calculate Activity
-    $activity = round($logins / getLastCycle(), 2);
+    $activity = round($logins / totalCycles($userid), 4);
 
     // Calculate score
     $score = $activity * $points;
 
     // Update total values
     updateTotals($userid, $username, $score, $points, $posts, $reputation, $ppd, $avatar, $logins, $activity);
+}
+
+// How many cycles has a user been through
+function totalCycles($userid) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM `history` WHERE `userid` = ?");
+    $statement->execute(array($userid));
+
+    return $statement->rowCount();
 }
 
 // Update Total's table values
@@ -390,7 +399,11 @@ function getRankChange($userid) {
     $current = getVal($userid, "rank");
 
     // Rank went up
-    if ($current < $past) {
+    if ($current < $past || $past == 0) {
+        // They just joined the list
+        if ($past == 0) {
+            return "<img src='images/green_up_arrow.png'>" . (totalUsers()-$current);
+        }
         return "<img src='images/green_up_arrow.png'>" . ($past-$current);
     }
     // Rank went down
