@@ -74,7 +74,7 @@
                             echo "<tr>";
                             echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
                             echo "<td align='center'>" . getRankChange($row["userid"]) . "</td>";
-                            echo "<td><img src='avatar/" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='http://webdevrefinery.com/forums/user/{$row["userid"]}-{$row["username"]}'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
+                            echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='http://webdevrefinery.com/forums/user/{$row["userid"]}-{$row["username"]}'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
                             echo "<td align='center'>" . round($row["score"]) . "</td>";
                             echo "<td align='center'>" . $row["points"] . " " . getPointsChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
