@@ -62,11 +62,12 @@ for ($a = 0; $a < PAGES; $a++) {
 	}
 
 	// Find out if user has logged in within last 24 hours.
+	$cur = 0;
 	foreach ($userid as $id) {
 		$userprofile = file_get_contents("http://webdevrefinery.com/forums/user/" . $id . "-");
 		$lastactive = extractData($userprofile, ">Last Active ", "</span>");
 		$lastactive = strtotime($lastactive);
-		if ((time()-$lastactive) <= 86400) {
+		if ((time()-$lastactive) <= 86400 || $posts[$cur++] != 0) {
 			// Has logged in within 24 hours
 			$status[] = 1;
 		} else {
