@@ -174,6 +174,11 @@ function addEntry($userid, $username, $date, $cycle, $avatar, $posts, $reputatio
     $reputation = $reputation - getTotal($userid, "reputation") - getBase($userid, "reputation");
     $points = $posts*10 + $reputation*25 + $loggedon*5;
 
+    // Detect if user logged in and their activity status is set to private
+    if ($posts != 0) {
+        $loggedon = 1;
+    }
+
     $db = database();
     $statement = $db->prepare("INSERT INTO `history` (`userid`, `username`, `date`, `cycle`, `avatar`, `points`, `posts`, `reputation`, `loggedon`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $statement->execute(array($userid, $username, $date, $cycle, $avatar, $points, $posts, $reputation, $loggedon));
