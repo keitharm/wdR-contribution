@@ -454,7 +454,7 @@ function getRepChange($userid) {
 }
 
 // Return point change of history vs current
-function getPointsChange($userid) {
+function getPointsChange($userid, $sign = true) {
     $history = getHistory($userid, 1); 
     if (getUpdateDate() == "stats are currently being updated...") {
         return "";
@@ -466,7 +466,10 @@ function getPointsChange($userid) {
 
     $past = $history[0][points];
     if ($past != 0) {
-        return "<font color='#28D308'>+" . $past;
+        if ($sign == true) {
+            return "<font color='#28D308'>+" . $past;
+        }
+        return $past;
     }
 }
 
@@ -644,15 +647,18 @@ function userColor($id, $username) {
 function statsLastXDays($type, $days) {
     $str = "[";
 
-    for ($i = 1; $i <= $days; $i++) {
+    for ($i = $days; $i >= 1; $i--) {
         if ($type == "day") {
-            $str .= $i . ", ";
+            $str .= "'" . date("m.d", time()-($i*86400)) . "', ";
+            //$str .= $i . ", ";
         } else if ($type == "posts") {
             $str .= totalXDaysAgo("posts", $i) . ", ";
         } else if ($type == "reputation") {
             $str .= totalXDaysAgo("reputation", $i) . ", ";
         } else if ($type == "loggedon") {
             $str .= totalXDaysAgo("loggedon", $i) . ", ";
+        } else if ($type == "points") {
+            $str .= totalXDaysAgo("points", $i)/10 . ", ";
         } else {
             $str .= "";
         }

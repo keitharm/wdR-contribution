@@ -23,6 +23,7 @@
         $posts = statsLastXDays("posts", DAYS);
         $reps = statsLastXDays("reputation", DAYS);
         $logins = statsLastXDays("loggedon", DAYS);
+        $points = statsLastXDays("points", DAYS);
 
 ?>
 <!DOCTYPE html>
@@ -41,12 +42,12 @@
                     x: -20 //center
                 },
                 subtitle: {
-                    text: 'Averages per day: <?=avgStats($posts)?> posts | <?=avgStats($reps)?> reputation points | <?=avgStats($logins)?> logins',
+                    text: 'Averages per day: <?=avgStats($posts)?> posts | <?=avgStats($reps)?> reputation points | <?=avgStats($logins)?> logins | <?=avgStats($points)*10?> points',
                     x: -20
                 },
                 xAxis: {
                     title: {
-                        text: 'Days ago'
+                        text: 'Date'
                     },
                     categories: <?=$daysago?>
                 },
@@ -79,7 +80,14 @@
                     name: 'Logins',
                     data: <?=$logins?>,
                     color: '#0000FF'
-                }]
+                }, {
+                    name: 'Points (normalized x/10)',
+                    data: <?=$points?>,
+                    color: '#FF00FF'
+                }],
+                tooltip: {
+                    shared: true
+                }
             });
         });
     </script>
@@ -119,7 +127,6 @@
                         <th>Change</th>
                         <th>Username</th>
                         <th>Score</th>
-                        <th>Points</th>
                         <th>Posts</th>
                         <th>Reputation</th>
                         <th>Activity</th>
@@ -132,8 +139,7 @@
                             echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
                             echo "<td align='center'>" . getRankChange($row["userid"]) . "</td>";
                             echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='http://webdevrefinery.com/forums/user/{$row["userid"]}-{$row["username"]}'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
-                            echo "<td align='center'>" . round($row["score"]) . "</td>";
-                            echo "<td align='center'>" . $row["points"] . " " . getPointsChange($row["userid"]) . "</td>";
+                            echo "<td align='center'>" . round($row["score"]) . " <font color='#28D308'>+" . round(getPointsChange($row["userid"], false)*$row["activity"]) . "</font></td>";
                             echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . round($row["activity"]*100, 2) . "%</td>";
