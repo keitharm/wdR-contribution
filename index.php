@@ -8,7 +8,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css" type="text/css">
-
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#container').highcharts({
+                title: {
+                    text: 'wdR stats history - Last 30 days',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '<a href="http://webdevrefinery.com/forums">webdevRefinery</a>',
+                    x: -20
+                },
+                xAxis: {
+                    title: {
+                        text: 'Days ago'
+                    },
+                    categories: <?=statsLastXDays("day", DAYS)?>
+                },
+                yAxis: [{
+                    min: 0,
+                    title: {
+                        text: 'Values'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                }],
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Posts',
+                    data: <?=statsLastXDays("posts", DAYS)?>,
+                    color: '#00FF00'
+                }, {
+                    name: 'Reputation Points',
+                    data: <?=statsLastXDays("reputation", DAYS)?>,
+                    color: '#FF0000'
+                }, {
+                    name: 'Logins',
+                    data: <?=statsLastXDays("loggedon", DAYS)?>,
+                    color: '#0000FF'
+                }]
+            });
+        });
+    </script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="../../assets/js/html5shiv.js"></script>
@@ -36,7 +86,6 @@
     ?>
 </head>
 <body>
-
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -45,6 +94,10 @@
             </div>
             <div class="col-md-2">
             </div>
+        </div>
+        <div class="row">
+            <script src="js/highcharts.js"></script>
+            <div id="container" style="width: 100%; height: 250px; margin: 0 auto"></div>
         </div>
         <div class="row">
             <div class="col-md-8">
@@ -114,12 +167,6 @@
             Original Concept by <a href="http://webdevrefinery.com/forums/user/3235-ianonavy/">ianonavy</a>
         </div>
     </div>
-
-
-
-
-
-<script src="http://code.jquery.com/jquery.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

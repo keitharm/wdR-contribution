@@ -640,4 +640,37 @@ function userColor($id, $username) {
         return $username;
     }
 }
+
+function statsLastXDays($type, $days) {
+    $str = "[";
+
+    for ($i = 1; $i <= $days; $i++) {
+        if ($type == "day") {
+            $str .= "'" . $i . "', ";
+        } else if ($type == "posts") {
+            $str .= totalXDaysAgo("posts", $i) . ", ";
+        } else if ($type == "reputation") {
+            $str .= totalXDaysAgo("reputation", $i) . ", ";
+        } else if ($type == "loggedon") {
+            $str .= totalXDaysAgo("loggedon", $i) . ", ";
+        } else {
+            $str .= "";
+        }
+    }
+
+    return substr($str, 0, -2) . "]";
+}
+
+function totalXDaysAgo($field, $days) {
+    $db = database();
+    $statement = $db->prepare("SELECT $field FROM `history` WHERE `date` > ? AND `date` < ?");
+    $statement->execute(array((time()-($days * 86400)), (time()-(($days-1) * 86400))));
+    $total = 0;
+
+    while ($info = $statement->fetchObject()) {
+        $total += $info->$field;
+    }
+
+    return $total;
+}
 ?>
