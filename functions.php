@@ -646,7 +646,7 @@ function statsLastXDays($type, $days) {
 
     for ($i = 1; $i <= $days; $i++) {
         if ($type == "day") {
-            $str .= "'" . $i . "', ";
+            $str .= $i . ", ";
         } else if ($type == "posts") {
             $str .= totalXDaysAgo("posts", $i) . ", ";
         } else if ($type == "reputation") {
@@ -672,5 +672,10 @@ function totalXDaysAgo($field, $days) {
     }
 
     return $total;
+}
+
+function avgStats($data) {
+    $split = explode(", ", substr($data, 1, -1));
+    return array_avg($split);
 }
 ?>

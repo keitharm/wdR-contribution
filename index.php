@@ -1,5 +1,29 @@
 <?php
     require_once("functions.php");
+
+    $db = database();
+        $page = fixPage($_GET['page']);
+        if ($_GET['do'] == "search" && $_POST['user'] != null) {
+            $count = $db->query("SELECT COUNT(*) FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%'");
+            $count = $count->fetchAll();
+            $count = $count[0][0];
+
+            if ($count == 1) {
+                $result_text = "<quote>1 match found</quote>";
+            } else {
+                $result_text = "<quote>" . $count . " matches found</quote>";
+            }
+            $statement = $db->query("SELECT * FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%' ORDER BY `rank` ASC LIMIT 25");
+        } else {
+            $statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT $page, 25");
+        }
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+        $daysago = statsLastXDays("day", DAYS);
+        $posts = statsLastXDays("posts", DAYS);
+        $reps = statsLastXDays("reputation", DAYS);
+        $logins = statsLastXDays("loggedon", DAYS);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,14 +41,14 @@
                     x: -20 //center
                 },
                 subtitle: {
-                    text: '<a href="http://webdevrefinery.com/forums">webdevRefinery</a>',
+                    text: 'Averages per day: <?=avgStats($posts)?> posts | <?=avgStats($reps)?> reputation points | <?=avgStats($logins)?> logins',
                     x: -20
                 },
                 xAxis: {
                     title: {
                         text: 'Days ago'
                     },
-                    categories: <?=statsLastXDays("day", DAYS)?>
+                    categories: <?=$daysago?>
                 },
                 yAxis: [{
                     min: 0,
@@ -45,15 +69,15 @@
                 },
                 series: [{
                     name: 'Posts',
-                    data: <?=statsLastXDays("posts", DAYS)?>,
+                    data: <?=$posts?>,
                     color: '#00FF00'
                 }, {
                     name: 'Reputation Points',
-                    data: <?=statsLastXDays("reputation", DAYS)?>,
+                    data: <?=$reps?>,
                     color: '#FF0000'
                 }, {
                     name: 'Logins',
-                    data: <?=statsLastXDays("loggedon", DAYS)?>,
+                    data: <?=$logins?>,
                     color: '#0000FF'
                 }]
             });
@@ -64,26 +88,6 @@
     <script src="../../assets/js/html5shiv.js"></script>
     <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
-
-    <?php
-        $db = database();
-        $page = fixPage($_GET['page']);
-        if ($_GET['do'] == "search" && $_POST['user'] != null) {
-            $count = $db->query("SELECT COUNT(*) FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%'");
-            $count = $count->fetchAll();
-            $count = $count[0][0];
-
-            if ($count == 1) {
-                $result_text = "<quote>1 match found</quote>";
-            } else {
-                $result_text = "<quote>" . $count . " matches found</quote>";
-            }
-            $statement = $db->query("SELECT * FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%' ORDER BY `rank` ASC LIMIT 25");
-        } else {
-            $statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT $page, 25");
-        }
-        $statement->setFetchMode(PDO::FETCH_ASSOC);
-    ?>
 </head>
 <body>
     <div class="container">
