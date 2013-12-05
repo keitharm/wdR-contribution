@@ -1,29 +1,31 @@
 <?php
-    require_once("functions.php");
+require_once("functions.php");
+# Days for stats
+define("DAYS", 46);
 
-    $db = database();
-        $page = fixPage($_GET['page']);
-        if ($_GET['do'] == "search" && $_POST['user'] != null) {
-            $count = $db->query("SELECT COUNT(*) FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%'");
-            $count = $count->fetchAll();
-            $count = $count[0][0];
+$db = database();
+$page = fixPage($_GET['page']);
+if ($_GET['do'] == "search" && $_POST['user'] != null) {
+    $count = $db->query("SELECT COUNT(*) FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%'");
+    $count = $count->fetchAll();
+    $count = $count[0][0];
 
-            if ($count == 1) {
-                $result_text = "<quote>1 match found</quote>";
-            } else {
-                $result_text = "<quote>" . $count . " matches found</quote>";
-            }
-            $statement = $db->query("SELECT * FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%' ORDER BY `rank` ASC LIMIT 25");
-        } else {
-            $statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT $page, 25");
-        }
-        $statement->setFetchMode(PDO::FETCH_ASSOC);
+    if ($count == 1) {
+        $result_text = "<quote>1 match found</quote>";
+    } else {
+        $result_text = "<quote>" . $count . " matches found</quote>";
+    }
+    $statement = $db->query("SELECT * FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%' ORDER BY `rank` ASC LIMIT 25");
+} else {
+    $statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT $page, 25");
+}
+$statement->setFetchMode(PDO::FETCH_ASSOC);
 
-        $daysago = statsLastXDays("day", DAYS);
-        $posts = statsLastXDays("posts", DAYS);
-        $reps = statsLastXDays("reputation", DAYS);
-        $logins = statsLastXDays("loggedon", DAYS);
-        $points = statsLastXDays("points", DAYS);
+$daysago = statsLastXDays("day", DAYS);
+$posts = statsLastXDays("posts", DAYS);
+$reps = statsLastXDays("reputation", DAYS);
+$logins = statsLastXDays("loggedon", DAYS);
+$points = statsLastXDays("points", DAYS);
 
 ?>
 <!DOCTYPE html>
@@ -38,7 +40,7 @@
         $(function () {
             $('#container').highcharts({
                 title: {
-                    text: 'wdR stats history - Last 30 days',
+                    text: 'wdR stats history - Last <?=DAYS?> days',
                     x: -20 //center
                 },
                 subtitle: {
@@ -138,7 +140,7 @@
                             echo "<tr>";
                             echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
                             echo "<td align='center'>" . getRankChange($row["userid"]) . "</td>";
-                            echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='http://webdevrefinery.com/forums/user/{$row["userid"]}-{$row["username"]}'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
+                            echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='view.php?user=" . $row["username"] . "'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
                             echo "<td align='center'>" . round($row["score"]) . " <font color='#28D308'>+" . round(getPointsChange($row["userid"], false)*$row["activity"]) . "</font></td>";
                             echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
@@ -166,7 +168,7 @@
                 <p>Scores = points * activity.</p>
                 <p>Users must have at least <b>5</b> posts in order to make it onto the leaderboards.</p>
                     Scores are calculated daily.<br>
-                    Calculating stats since <?=date("F j, Y", START_TIME)?><br><br><br>
+                    Calculating stats since <?=date("F j, Y", START_TIME-7200)?><br><br><br>
                     Last calculated <b><?=getUpdateDate()?></b>.
                     <p class="text-muted">Full source available on <a href='https://github.com/solewolf/wdR-contribution/'>Github</a></p>
                 </p>

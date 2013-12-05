@@ -647,9 +647,9 @@ function userColor($id, $username) {
 function statsLastXDays($type, $days) {
     $str = "[";
 
-    for ($i = $days; $i >= 1; $i--) {
+    for ($i = $days; $i > 0; $i--) {
         if ($type == "day") {
-            $str .= "'" . date("m.d", time()-($i*86400)) . "', ";
+            $str .= "'" . date("m.d", strtotime(date("m.d.y"))-($i*86400)) . "', ";
             //$str .= $i . ", ";
         } else if ($type == "posts") {
             $str .= totalXDaysAgo("posts", $i) . ", ";
@@ -667,17 +667,50 @@ function statsLastXDays($type, $days) {
     return substr($str, 0, -2) . "]";
 }
 
-function totalXDaysAgo($field, $days) {
+function totalXDaysAgo($type, $days) {
     $db = database();
-    $statement = $db->prepare("SELECT $field FROM `history` WHERE `date` > ? AND `date` < ?");
-    $statement->execute(array((time()-($days * 86400)), (time()-(($days-1) * 86400))));
+    $statement = $db->prepare("SELECT $type FROM `history` WHERE `cycle` = ? ORDER BY cycle DESC");
+    $statement->execute(array(getLastCycle()+1-$days));
     $total = 0;
 
     while ($info = $statement->fetchObject()) {
-        $total += $info->$field;
+        $total += $info->$type;
     }
 
     return $total;
+}
+
+function userStatsLastXDays($type, $days, $userid = 1) {
+    $str = "[";
+
+    for ($i = $days; $i > 0; $i--) {
+        if ($type == "day") {
+            $str .= "'" . date("m.d", strtotime(date("m.d.y"))-($i*86400)) . "', ";
+            //$str .= $i . ", ";
+        } else if ($type == "posts") {
+            $str .= userTotalXDaysAgo("posts", $i, $userid) . ", ";
+        } else if ($type == "reputation") {
+            $str .= userTotalXDaysAgo("reputation", $i, $userid) . ", ";
+        } else if ($type == "loggedon") {
+            $str .= userTotalXDaysAgo("loggedon", $i, $userid) . ", ";
+        } else if ($type == "points") {
+            $str .= userTotalXDaysAgo("points", $i, $userid)/10 . ", ";
+        } else {
+            $str .= "";
+        }
+    }
+
+    return substr($str, 0, -2) . "]";
+}
+
+function userTotalXDaysAgo($type, $days, $userid) {
+    $db = database();
+    $statement = $db->prepare("SELECT $type FROM `history` WHERE `cycle` = ? AND userid = ? ORDER BY cycle DESC");
+    $statement->execute(array(getLastCycle()+1-$days, $userid));
+    $total = 0;
+
+    $info = $statement->fetchObject();
+    return $info->$type;
 }
 
 function avgStats($data) {

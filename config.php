@@ -5,8 +5,6 @@ define("START_TIME", 1382245200);
 define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_order=desc&max_results=20&st=");
 # Approximate ratio of how many members have more than 5 posts
 define("POSTS_RATIO", .0722);
-# Days for stats
-define("DAYS", 30);
 
 # Database info
 $config['db']['dbname'] = "wdr-contribution";
