@@ -3,7 +3,13 @@ require_once("functions.php");
 
 $userid = username_to_id(fixUsername($_GET['user']));
 
-define("DAYSBACK", totalCycles($userid));
+if (totalCycles($userid) > 30) {
+    $days = 30;
+} else {
+    $days = totalCycles($userid);
+}
+
+define("DAYSBACK", $days);
 
 $db = database();
 $statement = $db->query("SELECT * FROM `history` WHERE `userid` = " . $userid . " ORDER BY `cycle` DESC LIMIT " . DAYSBACK);

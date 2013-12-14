@@ -1,7 +1,7 @@
 <?php
 require_once("functions.php");
 # Days for stats
-define("DAYS", 46);
+define("DAYS", 30);
 
 $db = database();
 $page = fixPage($_GET['page']);
