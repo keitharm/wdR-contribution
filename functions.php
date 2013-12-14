@@ -695,6 +695,8 @@ function userStatsLastXDays($type, $days, $userid = 1) {
             $str .= userTotalXDaysAgo("loggedon", $i, $userid) . ", ";
         } else if ($type == "points") {
             $str .= userTotalXDaysAgo("points", $i, $userid)/10 . ", ";
+        } else if ($type == "rank") {
+            $str .= userTotalXDaysAgo("rank", $i, $userid) . ", ";
         } else {
             $str .= "";
         }

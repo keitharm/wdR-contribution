@@ -3,6 +3,10 @@ require_once("functions.php");
 
 $userid = username_to_id(fixUsername($_GET['user']));
 
+if ($userid == null) {
+    die("The specified user does not exist.");
+}
+
 if (totalCycles($userid) > 30) {
     $days = 30;
 } else {
@@ -24,6 +28,7 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
     $reps = userStatsLastXDays("reputation", DAYSBACK, $userid);
     $logins = userStatsLastXDays("loggedon", DAYSBACK, $userid);
     $points = userStatsLastXDays("points", DAYSBACK, $userid);
+    $rank = userStatsLastXDays("rank", DAYSBACK, $userid);
 ?>
 <!DOCTYPE html>
 <html>
@@ -37,7 +42,7 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
         $(function () {
             $('#container').highcharts({
                 title: {
-                    text: '<?=fixUsername($_GET[user])?> stats history - Last <?=DAYSBACK?> days',
+                    text: '<?=fixUsername($_GET[user])?>\'s stats history - Last <?=DAYSBACK?> days',
                     x: -20 //center
                 },
                 subtitle: {
@@ -70,19 +75,23 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
                 series: [{
                     name: 'Posts',
                     data: <?=$posts?>,
-                    color: '#00FF00'
+                    color: '#0F0'
                 }, {
                     name: 'Reputation Points',
                     data: <?=$reps?>,
-                    color: '#FF0000'
+                    color: '#F00'
                 }, {
                     name: 'Logins',
                     data: <?=$logins?>,
-                    color: '#0000FF'
+                    color: '#00F'
                 }, {
                     name: 'Points (normalized x/10)',
                     data: <?=$points?>,
-                    color: '#FF00FF'
+                    color: '#F0F'
+                }, {
+                    name: 'Rank',
+                    data: <?=$rank?>,
+                    color: '#0FF'
                 }],
                 tooltip: {
                     shared: true
@@ -130,8 +139,8 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
                         echo "<td align='center'>" . date("m.d.y", $row["date"]-3600) . "</td>";
 						echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
                         echo "<td align='center'><img align='center' src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='http://webdevrefinery.com/forums/user/{$row["userid"]}-{$row["username"]}'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
-                        echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
-                        echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
+                        echo "<td align='center'>" . $row["posts"] . "</td>";
+                        echo "<td align='center'>" . $row["reputation"] . "</td>";
                         echo "<td align='center'><font color='" . ($row["loggedon"] == 1 ? "green'>yes" : "red'>no") . "</font></td>";
                         echo "</tr>";
                         $users++;
