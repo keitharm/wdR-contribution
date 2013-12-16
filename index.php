@@ -161,9 +161,9 @@ $points = statsLastXDays("points", DAYS);
             <div class="col-md-4">
                 <p>Users receive points via the following criteria: <br>
                     <ul>
-                        <li>Post: 10 points.</li>
-                        <li>Rep Point: 25 points.</li>
-                        <li>Logged on in past 24 hours: 5 points.</li>
+                        <li>Post: 5 points.</li>
+                        <li>Rep Point: 35 points.</li>
+                        <li>Logged on in past 24 hours: 1 point.</li>
                     </ul>
                 <p>Scores = points * activity.</p>
                 <p>Users must have at least <b>5</b> posts in order to make it onto the leaderboards.</p>
