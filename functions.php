@@ -172,7 +172,7 @@ function addEntry($userid, $username, $date, $cycle, $avatar, $posts, $reputatio
     // current - total - base gets daily difference
     $posts = $posts - getTotal($userid, "posts") - getBase($userid, "posts");
     $reputation = $reputation - getTotal($userid, "reputation") - getBase($userid, "reputation");
-    $points = $posts*10 + $reputation*25 + $loggedon*5;
+    $points = $posts*5 + $reputation*35 + $loggedon*1;
 
     // Detect if user logged in and their activity status is set to private
     if ($posts != 0) {
