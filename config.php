@@ -7,7 +7,13 @@ define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_ord
 define("POSTS_RATIO", .0722);
 
 # Database info
-$config['db']['dbname'] = "wdr-contribution";
-$config['db']['username'] = "root";
-$config['db']['password'] = "wdrcontribmysql";
+if (exec("hostname") == "vps.toequest.com") {
+        $config[db][dbname] = "code_wdr";
+        $config[db][username] = "code_wdr";
+        $config[db][password] = "totallynotmyactualpassword:)!";
+} else {
+	$config['db']['dbname'] = "wdr-contribution";
+	$config['db']['username'] = "root";
+	$config['db']['password'] = "wdrcontribmysql";
+}
 ?>
