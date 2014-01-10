@@ -157,10 +157,10 @@ $points = statsLastXDays("points", DAYS);
                             echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
                             echo "<td align='center'>" . getRankChange($row["userid"]) . "</td>";
                             echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='view.php?user=" . $row["username"] . "'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
-                            echo "<td align='center'>" . round($row["score"]) . " <font color='#28D308'>+" . round(getPointsChange($row["userid"], false)*$row["active"]) . "</font></td>";
+                            echo "<td align='center'>" . round($row["score"]) . " <font color='#28D308'>+" . round(getPointsChange($row["userid"], false)*$row["activity"]) . "</font></td>";
                             echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
-                            echo "<td align='center'>" . round($row["active"]*100, 2) . "%</td>";
+                            echo "<td align='center'>" . round($row["activity"]*100, 2) . "%</td>";
                             echo "<td align='center'><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";
                             $users++;
@@ -191,7 +191,7 @@ $points = statsLastXDays("points", DAYS);
             </div>
         </div>
         <div class="row footer">
-            Created and Designed by <a href="http://webdevrefinery.com/forums/user/2338-sole-wolf/">Sole_Wolf</a> and <a href="http://webdevrefinery.com/forums/user/4395-themaster/">TheMaster</a><br>
+            Created and Designed by <a href="http://webdevrefinery.com/forums/user/2338-sole-wolf/">SoleWolf</a> and <a href="http://webdevrefinery.com/forums/user/4395-themaster/">TheMaster</a><br>
             Original Concept by <a href="http://webdevrefinery.com/forums/user/3235-ianonavy/">ianonavy</a>
         </div>
     </div>
