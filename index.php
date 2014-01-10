@@ -3,6 +3,22 @@ require_once("functions.php");
 # Days for stats
 define("DAYS", 30);
 
+if (!isset($_GET['do'])) {
+    $_GET['do'] = "";
+}
+
+if (!isset($_GET['page'])) {
+    $_GET['page'] = 0;
+}
+
+if (!isset($_POST['user'])) {
+    $_POST['user'] = "";
+}
+
+if (!isset($result_text)) {
+    $result_text = "";
+}
+
 $db = database();
 $page = fixPage($_GET['page']);
 if ($_GET['do'] == "search" && $_POST['user'] != null) {
@@ -141,10 +157,10 @@ $points = statsLastXDays("points", DAYS);
                             echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
                             echo "<td align='center'>" . getRankChange($row["userid"]) . "</td>";
                             echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='view.php?user=" . $row["username"] . "'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
-                            echo "<td align='center'>" . round($row["score"]) . " <font color='#28D308'>+" . round(getPointsChange($row["userid"], false)*$row["activity"]) . "</font></td>";
+                            echo "<td align='center'>" . round($row["score"]) . " <font color='#28D308'>+" . round(getPointsChange($row["userid"], false)*$row["active"]) . "</font></td>";
                             echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
-                            echo "<td align='center'>" . round($row["activity"]*100, 2) . "%</td>";
+                            echo "<td align='center'>" . round($row["active"]*100, 2) . "%</td>";
                             echo "<td align='center'><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";
                             $users++;

@@ -380,7 +380,7 @@ function getHistory($userid, $results = 5) {
         $data[$entry]["cycle"] = $info->cycle;
         $data[$entry]["avatar"] = $info->avatar;
         $data[$entry]["rank"] = $info->rank;
-        $data[$entry]["points"] = $info->points;
+        $data[$entry]["points"] = $info->score;
         $data[$entry]["posts"] = $info->posts;
         $data[$entry]["reputation"] = $info->reputation;
         $data[$entry]["loggedon"] = $info->loggedon;
@@ -400,7 +400,7 @@ function getRankChange($userid) {
         return "--";
     }
 
-    $past = $history[0][rank];
+    $past = $history[0]['rank'];
     $current = getVal($userid, "rank");
 
     // Rank went up
@@ -430,7 +430,7 @@ function getPostChange($userid) {
         return "";
     }
 
-    $past = $history[0][posts];
+    $past = $history[0]['posts'];
     if ($past != 0) {
         return "<font color='#28D308'>+" . $past;
     }
@@ -447,7 +447,7 @@ function getRepChange($userid) {
         return "";
     }
 
-    $past = $history[0][reputation];
+    $past = $history[0]['reputation'];
     if ($past != 0) {
         return "<font color='#28D308'>+" . $past;
     }
@@ -464,7 +464,7 @@ function getPointsChange($userid, $sign = true) {
         return "";
     }
 
-    $past = $history[0][points];
+    $past = $history[0]['points'];
     if ($past != 0) {
         if ($sign == true) {
             return "<font color='#28D308'>+" . $past;
