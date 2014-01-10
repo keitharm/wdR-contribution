@@ -152,7 +152,7 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
             </table>
         </div>
         <div class="row footer">
-            Created and Designed by <a href="http://webdevrefinery.com/forums/user/2338-sole-wolf/">Sole_Wolf</a> and <a href="http://webdevrefinery.com/forums/user/4395-themaster/">TheMaster</a><br>
+            Created and Designed by <a href="http://webdevrefinery.com/forums/user/2338-sole-wolf/">SoleWolf</a> and <a href="http://webdevrefinery.com/forums/user/4395-themaster/">TheMaster</a><br>
             Original Concept by <a href="http://webdevrefinery.com/forums/user/3235-ianonavy/">ianonavy</a>
         </div>
     </div>
