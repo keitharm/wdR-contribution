@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `history` (
   `cycle` int(5) NOT NULL,
   `avatar` varchar(150) NOT NULL,
   `rank` int(3) NOT NULL,
-  `score` double NOT NULL,
+  `points` double NOT NULL,
   `posts` int(5) NOT NULL,
   `reputation` int(5) NOT NULL,
   `loggedon` int(1) NOT NULL,
@@ -65,12 +65,13 @@ CREATE TABLE IF NOT EXISTS `total` (
   `rank` int(3) NOT NULL,
   `username` varchar(32) NOT NULL,
   `score` double NOT NULL,
+  `points` double NOT NULL,
   `posts` int(5) NOT NULL,
   `reputation` int(5) NOT NULL,
   `ppd` double NOT NULL,
   `avatar` varchar(150) NOT NULL,
   `logins` int(5) NOT NULL,
-  `active` int(3) NOT NULL,
+  `activity` double NOT NULL,
   UNIQUE KEY `id` (`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
