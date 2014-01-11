@@ -7,9 +7,9 @@ require_once("../../functions.php");
 $dbh = database();
 
 /* Checks and validates type variable. MUST be set */
-if ((isset($_POST['type'])) AND ($_POST['type']!="")) {
+if ((isset($_GET['type'])) AND ($_GET['type']!="")) {
 
-    $type = $_POST['type'];
+    $type = $_GET['type'];
 
     $valid = array("top", "all", "user");
 
@@ -27,9 +27,9 @@ if ((isset($_POST['type'])) AND ($_POST['type']!="")) {
 }
 
 /* Checks for user variable. Only enforced if type=user */
-if ((isset($_POST['user'])) AND ($_POST['user']!="")) {
+if ((isset($_GET['user'])) AND ($_GET['user']!="")) {
 
-    $user = $_POST['user'];
+    $user = $_GET['user'];
 
 } else {
     if ($type=="user") {
@@ -40,9 +40,9 @@ if ((isset($_POST['user'])) AND ($_POST['user']!="")) {
 }
 
 /* Checks and validates sort variable. Only enforced if type is NOT user */
-if ((isset($_POST['sort'])) AND ($_POST['sort']!="")) {
+if ((isset($_GET['sort'])) AND ($_GET['sort']!="")) {
 
-    $sort = $_POST['sort'];
+    $sort = $_GET['sort'];
 
     $valid = array("posts", "rep", "logins");
 
@@ -62,9 +62,9 @@ if ((isset($_POST['sort'])) AND ($_POST['sort']!="")) {
 }
 
 /* Checks for num variable. Only enforced if type=top */
-if ((isset($_POST['num'])) && ($_POST['num']!="")) {
+if ((isset($_GET['num'])) && ($_GET['num']!="")) {
 
-    $num = $_POST['num'];
+    $num = $_GET['num'];
     $num = intval($num);
 
 } else {
