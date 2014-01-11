@@ -2,3 +2,4 @@ signature.png
 .idea/*
 .DS_Store
 error_log
+config.php
