@@ -1,5 +1,7 @@
 <?php
 
+header("Access-Control-Allow-Origin: *");
+
 require_once("../../functions.php");
 
 $dbh = database();
