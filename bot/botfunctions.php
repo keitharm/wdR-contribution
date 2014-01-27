@@ -23,6 +23,33 @@ function userBBColor($id, $username) {
     }
 }
 
+/**
+ * @param $image, the path to the image you wish to upload.
+ * @return string, returns the URL of the image
+ * This function uploads an image to imgur, and returns the URL to that image.
+ */
+
+function uploadImage($image) {
+
+    $client_id = "525cd0d8daad6de";
+    $image = file_get_contents($image);
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://api.imgur.com/3/image.json');
+    curl_setopt($ch, CURLOPT_POST, TRUE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Client-ID ' . $client_id));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, array('image' => base64_encode($image)));
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+    $reply = curl_exec($ch);
+    curl_close($ch);
+
+    $reply = json_decode($reply);
+    return $reply->data->link;
+
+}
+
 // Post to the General Discussion forum as the specified user with the specified message
 function post($username, $password, $title, $msg) {
 	############# LOGIN #############
