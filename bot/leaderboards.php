@@ -33,7 +33,6 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
                         <th>Posts</th>
                         <th>Reputation</th>
                         <th>Activity</th>
-                        <th>Signature</th>
                     </tr>
                     <?php
                         $users = 0;
@@ -50,7 +49,6 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
                             echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
                             echo "<td align='center'>" . round($row["activity"]*100, 2) . "%</td>";
-                            echo "<td align='center'><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";
                             $users++;
                         }
