@@ -4,6 +4,7 @@
 	This is so that we can calculate how many posts the user has made
 	since we have started our leaderboards system
 */
+chdir(dirname(__FILE__));
 set_time_limit(0);
 require_once("../functions.php");
 

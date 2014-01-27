@@ -1,7 +1,8 @@
 <?php
 /*
 	This script should run once daily to fetch new values, update totals and ranks, etc.
-*/ 
+*/
+chdir(dirname(__FILE__)); 
 set_time_limit(0);
 require_once("../functions.php");
 
