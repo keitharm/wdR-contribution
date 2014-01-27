@@ -5,56 +5,22 @@ function getAuthKey() {
 	return extractData($data, "auth_key' value='", "' />", 1);
 }
 
-function extractData($data, $search, $ending, $specific = -1) {
-	$matches = findall($search, $data);
-	foreach ($matches as &$val) {
-		$offset = 0;
-		$val += strlen($search);
-        while (substr($data, $val+$offset, strlen($ending)) != $ending) {
-            $offset++;
-        }
-		$val = substr($data, $val, $offset);
-	}
-    if ($matches == false) {
-        return "Error, no matches found.";
-    }
+/**
+ * @param $id, id of the user
+ * @param $username, username of the user
+ * @return string, a formatted string of the username enclosed in BBCode coloring
+ *
+ * This function is the same as userColor(), except it returns the BBCode equivalent of the HTML code.
+ */
 
-    if ($specific == -1) {
-        if (count($matches) == 1) {
-            return $matches[0];
-        }
-	    return $matches;
+function userBBColor($id, $username) {
+    if (in_array($id, array(1, 2))) {
+        return "[color=red][b]" . $username . "[/b][/color]";
+    } else if (in_array($id, array(602, 3291, 3008, 5574, 4637))) {
+        return "[color=#f94][b]" . $username . "[/b][/color]";
+    } else {
+        return $username;
     }
-    return $matches[$specific-1];
-}
-
-// Function I found online
-// Rewrote it to look nicer (so many comments in the last version!)
-function findall($needle, $haystack) { 
-    $buffer = '';
-    $pos = 0;
-    $end = strlen($haystack);
-    $getchar = '';
-    $needlelen = strlen($needle); 
-    $found = array();
-    
-    while ($pos < $end) { 
-        $getchar = substr($haystack, $pos, 1);
-        if ($getchar != "\\n" || $buffer < $needlelen) { 
-            $buffer = $buffer . $getchar;
-            if (strlen($buffer) > $needlelen) { 
-                $buffer = substr($buffer, -$needlelen);
-            }
-            if ($buffer == $needle) { 
-                $found[] = $pos - $needlelen + 1;
-            } 
-        } 
-        $pos++;
-    } 
-    if (array_key_exists(0, $found)) { 
-        return $found;
-    }
-    return false;
 }
 
 // Post to the General Discussion forum as the specified user with the specified message
