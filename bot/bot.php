@@ -11,8 +11,7 @@ javascript-delay 5000 http://www.solewolf.com/wdr/bot/chart.php chart.png';
 $leaderboard_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --
 javascript-delay 5000 http://www.solewolf.com/wdr/bot/leaderboards.php leaderboards.png';
 
-exec($chart_screen_command);
-exec($leaderboard_screen_command);
+exec($chart_screen_command . "&&" . $leaderboard_screen_command);
 
 $chart_image_url = uploadImage("chart.png");
 $leaderboards_image_url = uploadImage("leaderboards.png");
@@ -100,22 +99,22 @@ $post = <<<POST
 [center][img=$chart_image_url][/center]
  
 [center][u][size=5]Top 5 Posters[/size][/u][/center]
-[center] [/center]
-[center][size=5][color=#ff0000]$poster[0] - {$top_posters[0]['SUM(posts)']}[/color][color=#008000]20[/color][/size][/center]
-[center][size=5][color=#ff0000]$poster[1] - {$top_posters[1]['SUM(posts)']}[/color][color=#008000]20[/color][/size][/center]
-[center][size=5][color=#ff0000]$poster[2] - {$top_posters[2]['SUM(posts)']}[/color][color=#008000]20[/color][/size][/center]
-[center][size=5][color=#ff0000]$poster[3] - {$top_posters[3]['SUM(posts)']}[/color][color=#008000]20[/color][/size][/center]
-[center][size=5][color=#ff0000]$poster[4] - {$top_posters[4]['SUM(posts)']}[/color][color=#008000]20[/color][/size][/center]
-[center] [/center]
+
+[center][size=5][color=#ff0000]$poster[0] - {$top_posters[0]['SUM(posts)']}[/color][/size][/center]
+[center][size=5][color=#ff0000]$poster[1] - {$top_posters[1]['SUM(posts)']}[/color][/size][/center]
+[center][size=5][color=#ff0000]$poster[2] - {$top_posters[2]['SUM(posts)']}[/color][/size][/center]
+[center][size=5][color=#ff0000]$poster[3] - {$top_posters[3]['SUM(posts)']}[/color][/size][/center]
+[center][size=5][color=#ff0000]$poster[4] - {$top_posters[4]['SUM(posts)']}[/color][/size][/center]
+
 [center][u][size=5]Top 5 Reputation Accumulators[/size][/u][/center]
-[center] [/center]
-[center][size=5][color=#ff0000]$repper[0] - {$top_reppers[0]['SUM(reputation)']}[/color][color=#008000]20[/color][/size][/center]
-[center][size=5][color=#ff0000]$repper[1] - {$top_reppers[1]['SUM(reputation)']}[/color][color=#008000]20[/color][/size][/center]
-[center][size=5][color=#ff0000]$repper[2] - {$top_reppers[2]['SUM(reputation)']}[/color][color=#008000]20[/color][/size][/center]
-[center][size=5][color=#ff0000]$repper[3] - {$top_reppers[3]['SUM(reputation)']}[/color][color=#008000]20[/color][/size][/center]
-[center][size=5][color=#ff0000]$repper[4] - {$top_reppers[4]['SUM(reputation)']}[/color][color=#008000]20[/color][/size][/center]
-[center] [/center]
-[center] [/center]
+
+[center][size=5][color=#ff0000]$repper[0] - {$top_reppers[0]['SUM(reputation)']}[/color][/size][/center]
+[center][size=5][color=#ff0000]$repper[1] - {$top_reppers[1]['SUM(reputation)']}[/color][/size][/center]
+[center][size=5][color=#ff0000]$repper[2] - {$top_reppers[2]['SUM(reputation)']}[/color][/size][/center]
+[center][size=5][color=#ff0000]$repper[3] - {$top_reppers[3]['SUM(reputation)']}[/color][/size][/center]
+[center][size=5][color=#ff0000]$repper[4] - {$top_reppers[4]['SUM(reputation)']}[/color][/size][/center]
+
+
 [center][u][size=6]Current Leaderboard[/size][/u][/center]
  
 [center][img=$leaderboards_image_url][/center]
