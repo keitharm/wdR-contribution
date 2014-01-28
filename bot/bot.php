@@ -5,11 +5,9 @@ chdir(dirname(__FILE__));
 require("botfunctions.php");
 require("../functions.php");
 
-$chart_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --
-javascript-delay 5000 http://www.solewolf.com/wdr/bot/chart.php chart.png';
+$chart_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --javascript-delay 5000 http://www.solewolf.com/wdr/bot/chart.php chart.png';
 
-$leaderboard_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --
-javascript-delay 5000 http://www.solewolf.com/wdr/bot/leaderboards.php leaderboards.png';
+$leaderboard_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --javascript-delay 5000 http://www.solewolf.com/wdr/bot/leaderboards.php leaderboards.png';
 
 exec($chart_screen_command . "&&" . $leaderboard_screen_command);
 
