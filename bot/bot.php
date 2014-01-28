@@ -91,32 +91,29 @@ $title = "wdR Contribution - Monthly Report " . $date;
 $post = <<<POST
 [center][color=#0000ff][size=7]wdR Contribution - Monthly Report[/size][/color][/center]
 [center][color=#ff0000][size=5]$date [/size][/color][/center]
-[center] [/center]
-[center][size=5]Total Posts: [color=#008000][size=6]$total_posts [/size][/color] Total Rep.:
-[color=#008000][size=6]$total_reputation [/size][/color] Total Logins: [color=#008000][size=6]$total_logins [/size]
-[/color][/size][/center]
+
+[center][size=5]Total Posts: [color=#008000][size=6]$total_posts [/size][/color] Total Rep.: [color=#008000][size=6]$total_reputation [/size][/color] Total Logins: [color=#008000][size=6]$total_logins [/size][/color][/size][/center]
 
 [center][img=$chart_image_url][/center]
- 
+
 [center][u][size=5]Top 5 Posters[/size][/u][/center]
 
-[center][size=5][color=#ff0000]$poster[0] - {$top_posters[0]['SUM(posts)']}[/color][/size][/center]
-[center][size=5][color=#ff0000]$poster[1] - {$top_posters[1]['SUM(posts)']}[/color][/size][/center]
-[center][size=5][color=#ff0000]$poster[2] - {$top_posters[2]['SUM(posts)']}[/color][/size][/center]
-[center][size=5][color=#ff0000]$poster[3] - {$top_posters[3]['SUM(posts)']}[/color][/size][/center]
-[center][size=5][color=#ff0000]$poster[4] - {$top_posters[4]['SUM(posts)']}[/color][/size][/center]
+[center][size=5]$poster[0] - {$top_posters[0]['SUM(posts)']}[/size][/center]
+[center][size=5]$poster[1] - {$top_posters[1]['SUM(posts)']}[/size][/center]
+[center][size=5]$poster[2] - {$top_posters[2]['SUM(posts)']}[/size][/center]
+[center][size=5]$poster[3] - {$top_posters[3]['SUM(posts)']}[/size][/center]
+[center][size=5]$poster[4] - {$top_posters[4]['SUM(posts)']}[/size][/center]
 
 [center][u][size=5]Top 5 Reputation Accumulators[/size][/u][/center]
 
-[center][size=5][color=#ff0000]$repper[0] - {$top_reppers[0]['SUM(reputation)']}[/color][/size][/center]
-[center][size=5][color=#ff0000]$repper[1] - {$top_reppers[1]['SUM(reputation)']}[/color][/size][/center]
-[center][size=5][color=#ff0000]$repper[2] - {$top_reppers[2]['SUM(reputation)']}[/color][/size][/center]
-[center][size=5][color=#ff0000]$repper[3] - {$top_reppers[3]['SUM(reputation)']}[/color][/size][/center]
-[center][size=5][color=#ff0000]$repper[4] - {$top_reppers[4]['SUM(reputation)']}[/color][/size][/center]
+[center][size=5]$repper[0] - {$top_reppers[0]['SUM(reputation)']}[/size][/center]
+[center][size=5]$repper[1] - {$top_reppers[1]['SUM(reputation)']}[/size][/center]
+[center][size=5]$repper[2] - {$top_reppers[2]['SUM(reputation)']}[/size][/center]
+[center][size=5]$repper[3] - {$top_reppers[3]['SUM(reputation)']}[/size][/center]
+[center][size=5]$repper[4] - {$top_reppers[4]['SUM(reputation)']}[/size][/center]
 
+[center][u][size=6]Current Leaderboard[/size][/u][/center]
 
-[center][u][size=6]Current Leaderboard[/size][/u][/center]
- 
 [center][img=$leaderboards_image_url][/center]
 POST;
 
