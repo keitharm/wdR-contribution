@@ -2,7 +2,7 @@
 require_once("functions.php");
 
 $db = database();
-$statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT 25");
+$statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT 5");
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 
 

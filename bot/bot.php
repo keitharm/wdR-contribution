@@ -5,6 +5,18 @@ chdir(dirname(__FILE__));
 require("botfunctions.php");
 require("../functions.php");
 
+$chart_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --
+javascript-delay 5000 http://www.solewolf.com/wdr/bot/chart.php chart.png';
+
+$leaderboard_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --
+javascript-delay 5000 http://www.solewolf.com/wdr/bot/leaderboards.php leaderboards.png';
+
+exec($chart_screen_command);
+exec($leaderboard_screen_command);
+
+$chart_image_url = uploadImage("chart.png");
+$leaderboards_image_url = uploadImage("leaderboards.png");
+
 try {
 
     $dbh = database();
@@ -85,7 +97,7 @@ $post = <<<POST
 [color=#008000][size=6]$total_reputation [/size][/color] Total Logins: [color=#008000][size=6]$total_logins [/size]
 [/color][/size][/center]
 
-[center][img=http://solewolf.com/wdr/bot/chart.png][/center]
+[center][img=$chart_image_url][/center]
  
 [center][u][size=5]Top 5 Posters[/size][/u][/center]
 [center] [/center]
@@ -106,9 +118,9 @@ $post = <<<POST
 [center] [/center]
 [center][u][size=6]Current Leaderboard[/size][/u][/center]
  
-[center][img=http://solewolf.com/wdr/bot/leaderboards.png][/center]
+[center][img=$leaderboards_image_url][/center]
 POST;
 
-post($botuser, $botpass, $title, $post);
+post(BOT_USER, BOT_PASS, $title, $post);
 
 ?>
