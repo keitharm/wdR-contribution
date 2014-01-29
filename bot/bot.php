@@ -119,7 +119,6 @@ $post = <<<POST
 [center][img=$leaderboards_image_url][/center]
 POST;
 
-die;
 post(BOT_USER, BOT_PASS, $title, $post);
 
 ?>
