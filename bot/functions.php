@@ -1,6 +1,6 @@
 <?php
 // Configuration values
-require_once("config.php");
+require_once("../config.php");
 
 // All functions below this line //
 function database() {
