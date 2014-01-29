@@ -1,15 +1,19 @@
 <?php
+// Make Apache set permissions for generated images rw for group
+umask(0002);
 
 chdir(dirname(__FILE__));
 
 require("botfunctions.php");
 require("../functions.php");
 
-$chart_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --javascript-delay 5000 http://www.solewolf.com/wdr/bot/chart.php chart.png';
+$chart_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --javascript-delay 3000 --quality 75 http://www.solewolf.com/wdr/bot/chart.php chart.png';
 
-$leaderboard_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --javascript-delay 5000 http://www.solewolf.com/wdr/bot/leaderboards.php leaderboards.png';
+$leaderboard_screen_command = 'xvfb-run --server-args="-screen 0, 1280x1024x24" ./wkhtmltoimage-amd64 --use-xserver --javascript-delay 3000 --quality 75 http://www.solewolf.com/wdr/bot/leaderboards.php leaderboards.png';
 
-exec($chart_screen_command . "&&" . $leaderboard_screen_command);
+exec($chart_screen_command);
+sleep(1);
+exec($leaderboard_screen_command);
 
 $chart_image_url = uploadImage("chart.png");
 $leaderboards_image_url = uploadImage("leaderboards.png");
@@ -115,6 +119,7 @@ $post = <<<POST
 [center][img=$leaderboards_image_url][/center]
 POST;
 
+die;
 post(BOT_USER, BOT_PASS, $title, $post);
 
 ?>
