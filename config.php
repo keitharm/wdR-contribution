@@ -6,8 +6,14 @@ define("URL", "http://webdevrefinery.com/forums/members/?sort_key=posts&sort_ord
 # Approximate ratio of how many members have more than 5 posts
 define("POSTS_RATIO", .0722);
 
+// Constants below need to be configured //
+
 # Database info
 $config['db']['dbname'] = "";
 $config['db']['username'] = "";
 $config['db']['password'] = "";
+
+# Bot posting user and pass
+define("BOT_USER", "");
+define("BOT_PASS", "");
 ?>
