@@ -2,7 +2,7 @@
 require_once("functions.php");
 
 $db = database();
-$statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT 5");
+$statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT 10");
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 
 
@@ -27,7 +27,6 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
                 <table class="table table-hover" id="rank">
                     <tr>
                         <th>Rank</th>
-                        <th>Change</th>
                         <th>Username</th>
                         <th>Score</th>
                         <th>Posts</th>
@@ -43,11 +42,10 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
                             }
                             echo "<tr>";
                             echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
-                            echo "<td align='center'>" . getRankChange($row["userid"]) . "</td>";
                             echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='view.php?user=" . $row["username"] . "'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
-                            echo "<td align='center'>" . round($row["score"]) . " <font color='#28D308'>+" . round(getPointsChange($row["userid"], false)*$row["activity"]) . "</font></td>";
-                            echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
-                            echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
+                            echo "<td align='center'>" . round($row["score"]) . "</font></td>";
+                            echo "<td align='center'>" . $row["posts"] . "</td>";
+                            echo "<td align='center'>" . $row["reputation"] . "</td>";
                             echo "<td align='center'>" . round($row["activity"]*100, 2) . "%</td>";
                             echo "</tr>";
                             $users++;

@@ -1,48 +1,14 @@
 <?php
 require_once("../functions.php");
 # Days for stats
-define("DAYS", 30);
-
-if (!isset($_GET['do'])) {
-    $_GET['do'] = "";
-}
-
-if (!isset($_GET['page'])) {
-    $_GET['page'] = 0;
-}
-
-if (!isset($_POST['user'])) {
-    $_POST['user'] = "";
-}
-
-if (!isset($result_text)) {
-    $result_text = "";
-}
-
-$db = database();
-$page = fixPage($_GET['page']);
-if ($_GET['do'] == "search" && $_POST['user'] != null) {
-    $count = $db->query("SELECT COUNT(*) FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%'");
-    $count = $count->fetchAll();
-    $count = $count[0][0];
-
-    if ($count == 1) {
-        $result_text = "<quote>1 match found</quote>";
-    } else {
-        $result_text = "<quote>" . $count . " matches found</quote>";
-    }
-    $statement = $db->query("SELECT * FROM `total` WHERE `username` LIKE '%" . $_POST['user'] . "%' ORDER BY `rank` ASC LIMIT 25");
-} else {
-    $statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC LIMIT $page, 25");
-}
-$statement->setFetchMode(PDO::FETCH_ASSOC);
+$time = time() - 86400;
+define("DAYS", cal_days_in_month(CAL_GREGORIAN, date("n", ($time)), date("Y", ($time))));
 
 $daysago = statsLastXDays("day", DAYS);
 $posts = statsLastXDays("posts", DAYS);
 $reps = statsLastXDays("reputation", DAYS);
 $logins = statsLastXDays("loggedon", DAYS);
 $points = statsLastXDays("points", DAYS);
-
 ?>
 <html>
 <head>
@@ -52,7 +18,7 @@ $points = statsLastXDays("points", DAYS);
         $(function () {
             $('#container').highcharts({
                 title: {
-                    text: 'wdR stats history - Last <?=DAYS?> days',
+                    text: 'wdR stats for <?=date("F Y", $time)?>',
                     x: -20 //center
                 },
                 subtitle: {
