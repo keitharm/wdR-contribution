@@ -5,8 +5,13 @@ require_once("config.php");
 // All functions below this line //
 function database() {
     global $config;
-    $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config['db']['dbname'], $config['db']['username'], $config['db']['password']);
-    return $db;
+    try {
+        $db = new PDO("mysql:host=localhost;port=3306;dbname=" . $config['db']['dbname'], $config['db']['username'], $config['db']['password']);
+        return $db;
+    } catch (PDOException $e) {
+        echo "Uh oh, something went wrong...";
+        die;
+    }
 }
 
 function extractData($data, $search, $ending, $specific = -1) {
