@@ -3,27 +3,21 @@ wdR Contribution
 
 Overview
 --------
-As suggested by TheMaster in the old thread, here is a new rerun of the
-top contributing wdR members based off of post counts and reputation 
-ratios.
- 
-I rewrote ianonavy's script in PHP because I don't know Python and it
-was a fun coding challenge.
+wdR Contribution is a contribution and forum participation tracker, for the online web development community: webDevRefinery (.com)
+
+On a daily basis, a script crawls the posts and user profile pages of the forum, recording how many new posts, reputation points (rep), and logins for that day have taken place. These results are stored in a database before being graphed and tabled in an easy to read format, complete with rankings, and a point system.
 
 Features
 --------
-Two scripts, one which generates a list of the most helpful and active users, and one which generates a "signature image" to show off your forum participation skills ;)
-
-TODO
-----
-Include more stats in the signature image.
-Add custom font support to signature script.
-Include custom background importing in signature script.
+* A crawler which records all new post, reputation, and login counts
+* A front end which displays this information in a tabular way
+* A bot which posts to the forum on the first day of every month with general statistics from the previous month
+* A basic signature generation system
 
 Thanks to:
 ----------
 ianonavy for the original concept and Python script.
-SolfWolf for the PHP rewrite and cleanup, as well as repository creation.
-TheMaster for signature image generation script.
+SolfWolf for the majority of the PHP rewrite, as well as repository creation.
+TheMaster for various feature implementations, and code maintenance.
 
 Live Site: http://solewolf.com/wdr
