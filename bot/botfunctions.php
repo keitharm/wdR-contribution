@@ -50,7 +50,14 @@ function uploadImage($image) {
 
 }
 
-// Post to the General Discussion forum as the specified user with the specified message
+/**
+ * @param $username string, username to post with
+ * @param $password string, password of the user to post with
+ * @param $title, title of the post
+ * @param $msg, the post contents
+ * @return mixed, string, the url of the post
+ */
+
 function post($username, $password, $title, $msg) {
 	############# LOGIN #############
 
@@ -135,15 +142,26 @@ function post($username, $password, $title, $msg) {
 	// Store cookies (don't think it's needed though...)
 	curl_setopt($ch, CURLOPT_COOKIEJAR, realpath('cookie.txt'));
 
+    // Get the headers returned as well, so the new post URL can be found
+    curl_setopt($ch, CURLOPT_HEADER, TRUE);
+
 	// Return content
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
 	// Execute
-	curl_exec($ch);
+	$return = curl_exec($ch);
 
 	#################################
 	# POST WAS POSTED SUCCESSFULLY?
 	# W00T IT WORKS!
+
+    // Get the location header from the HTTP response
+
+    $url = explode("\n", substr($return, strpos($return, "Location: ") + 10));
+
+    $post_location = $url[0];
+
+    return $post_location;
 	 
 }
 ?>

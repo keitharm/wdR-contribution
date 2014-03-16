@@ -78,3 +78,14 @@ CREATE TABLE IF NOT EXISTS `total` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `monthly_reports`
+--
+
+CREATE TABLE IF NOT EXISTS `monthly_reports` (
+  date text,
+  url text
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;

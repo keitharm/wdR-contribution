@@ -18,6 +18,9 @@ exec($leaderboard_screen_command);
 $chart_image_url = uploadImage("chart.png");
 $leaderboards_image_url = uploadImage("leaderboards.png");
 
+$monthyear = date("F Y", time()-86400);
+$lastmonthyear = date("F Y", strtotime("first day of last month"));
+
 try {
 
     $dbh = database();
@@ -63,6 +66,11 @@ try {
     $sth->setFetchMode(PDO::FETCH_ASSOC);
     $top_reppers = $sth->fetchAll();
 
+    $sth = $dbh->prepare("SELECT url FROM monthly_reports WHERE date=?");
+    $sth->execute(array($lastmonthyear));
+    $sth->setFetchMode(PDO::FETCH_ASSOC);
+    $last_post_url = $sth->fetch();
+
 
 } catch(PDOException $e) {
     echo $e->getMessage();
@@ -83,12 +91,13 @@ for ($i = 0; $i<10; $i++) {
 
 }
 
-$monthyear = date("F Y", time()-86400);
 $title = "wdR Contribution - Monthly Report " . $monthyear;
 
 $post = <<<POST
 [center][color=#0000ff][size=7]wdR Contribution - Monthly Report[/size][/color][/center]
 [center][color=#ff0000][size=5]{$monthyear} [/size][/color][/center]
+
+[center][size=4]Previous month's report: {$last_post_url['url']}[/size][/center]
 
 [center][size=5]Total Posts: [color=#008000][size=6]$total_posts [/size][/color] Total Reputation: [color=#008000][size=6]$total_reputation [/size][/color] Total Logins: [color=#008000][size=6]$total_logins [/size][/color][/size][/center]
 
@@ -125,6 +134,9 @@ $post = <<<POST
 [center][img=$leaderboards_image_url][/center]
 POST;
 
-post(BOT_USER, BOT_PASS, $title, $post);
+$url = post(BOT_USER, BOT_PASS, $title, $post);
+
+$sth = $dbh->prepare("INSERT INTO monthly_reports (date, url) VALUES (?, ?)");
+$sth->execute(array($monthyear, $url));
 
 ?>
