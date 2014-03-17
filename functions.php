@@ -724,4 +724,44 @@ function avgStats($data) {
     $split = explode(", ", substr($data, 1, -1));
     return array_avg($split);
 }
+
+function updateCache() {
+    for ($i = 30; $i > 0; $i--) {
+        updateCacheValue($i, "posts", totalXDaysAgo("posts", $i));
+        updateCacheValue($i, "reputation", totalXDaysAgo("reputation", $i));
+        updateCacheValue($i, "loggedon", totalXDaysAgo("loggedon", $i));
+        updateCacheValue($i, "points", round(totalXDaysAgo("points", $i)/10, 1));
+    }
+}
+
+function updateCacheValue($day, $field, $value) {
+    $db = database();
+    $statement = $db->prepare("UPDATE `cache` SET $field = ? WHERE `day` = ?;");
+    $statement->execute(array($value, $day));
+}
+
+function fetchCacheValue($day, $field) {
+    $db = database();
+    $statement = $db->prepare("SELECT $field FROM `cache` WHERE `day` = ?");
+    $statement->execute(array($day));
+    $info = $statement->fetchObject();
+    return $info->$field;
+}
+
+function fetchCached($field) {
+    $str = "[";
+    for ($i = 30; $i > 0; $i--) {
+        if ($field == "posts") {
+            $str .= fetchCacheValue($i, "posts") . ", ";
+        } else if ($field == "reputation") {
+            $str .= fetchCacheValue($i, "reputation") . ", ";
+        } else if ($field == "loggedon") {
+            $str .= fetchCacheValue($i, "loggedon") . ", ";
+        } else if ($field == "points") {
+            $str .= fetchCacheValue($i, "points") . ", ";
+        }
+    }
+
+    return substr($str, 0, -2) . "]";
+}
 ?>

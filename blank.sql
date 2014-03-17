@@ -75,10 +75,6 @@ CREATE TABLE IF NOT EXISTS `total` (
   UNIQUE KEY `id` (`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
 -- --------------------------------------------------------
 
 --
@@ -89,3 +85,18 @@ CREATE TABLE IF NOT EXISTS `monthly_reports` (
   date text,
   url text
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cache`
+--
+
+CREATE TABLE IF NOT EXISTS `cache` (
+  `day` int(2) NOT NULL,
+  `posts` int(3) NOT NULL,
+  `reputation` int(3) NOT NULL,
+  `loggedon` int(3) NOT NULL,
+  `points` double NOT NULL,
+  UNIQUE KEY `day` (`day`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

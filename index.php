@@ -38,10 +38,10 @@ if ($_GET['do'] == "search" && $_POST['user'] != null) {
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 
 $daysago = statsLastXDays("day", DAYS);
-$posts = statsLastXDays("posts", DAYS);
-$reps = statsLastXDays("reputation", DAYS);
-$logins = statsLastXDays("loggedon", DAYS);
-$points = statsLastXDays("points", DAYS);
+$posts = fetchCached("posts");
+$reps = fetchCached("reputation");
+$logins = fetchCached("loggedon");
+$points = fetchCached("points");
 
 ?>
 <!DOCTYPE html>

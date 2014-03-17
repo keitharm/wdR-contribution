@@ -2,7 +2,7 @@
 /*
 	This script should run once daily to fetch new values, update totals and ranks, etc.
 */
-chdir(dirname(__FILE__)); 
+chdir(dirname(__FILE__));
 set_time_limit(0);
 require_once("../functions.php");
 
@@ -107,6 +107,9 @@ updateHistoryRanks();
 
 echo "Updating Current Rankings...\n";
 updateRanks();
+
+echo "Updating Last 30 Day Stats Cache...\n"
+updateCache();
 
 echo "A total of " . ((($a)*20)-$old) . " members stats were updated in " . round($eta_new-$eta_start) . " seconds.\n";
 ?>
