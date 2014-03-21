@@ -277,8 +277,29 @@ function calculateTotals($userid) {
     $timedif = ceil((time() - START_TIME) / 86400);
     $ppd = round($posts / $timedif, 2);
 
-    // Calculate Activity
-    $activity = round($logins / totalCycles($userid), 4);
+    $activityStatementQuery = $db->prepare("SELECT * FROM `history` WHERE `userid` = ? ORDER BY `cycle` DESC LIMIT 30");
+    $activityStatementQuery->setFetchMode(PDO::FETCH_ASSOC);
+
+    /**
+     * Below code assigns a decreasing number of points depending on when the user last logged on.
+     * 30 points for logging in yesterday, 29 for the day before that, etc.
+     */
+
+    $currentDayCycle = 30;
+    $activityPoints = 0;
+    while ($row = $activityStatementQuery->fetch()) {
+
+        if ($row['loggedon']==1) {
+
+            $activityPoints += 30 - (30 - $currentDayCycle);
+            $currentDayCycle = $currentDayCycle - 1;
+
+        }
+
+    }
+
+    // Percentage of total possible points for last 30 days (30 + 29 ... + 1) = 465
+    $activity = round($activityPoints / 465, 4);
 
     // Calculate score
     $score = $activity * $points;
