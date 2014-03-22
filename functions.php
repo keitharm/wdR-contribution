@@ -278,6 +278,7 @@ function calculateTotals($userid) {
     $ppd = round($posts / $timedif, 2);
 
     $activityStatementQuery = $db->prepare("SELECT * FROM `history` WHERE `userid` = ? ORDER BY `cycle` DESC LIMIT 30");
+    $activityStatementQuery->execute(array($userid));
     $activityStatementQuery->setFetchMode(PDO::FETCH_ASSOC);
 
     /**
