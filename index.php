@@ -155,11 +155,11 @@ $points = fetchCached("points");
                         while ($row = $statement->fetch()) {
                             echo "<tr>";
                             echo "<td align='center'>" . rankColor($row["rank"]) . "</td>";
-                            echo "<td align='center'>" . getRankChange($row["userid"]) . "</td>";
+                            echo "<td align='center'>" . stylize("rank", fetchLeaderboardsCacheValue($row["userid"], "rank_change")) . "</td>";
                             echo "<td><img src='" . $row["avatar"] . "' width='25' height='25'>&nbsp;&nbsp;&nbsp;<a href='view.php?user=" . $row["username"] . "'>" . userColor($row["userid"], $row["username"]) . "</a></td>";
-                            echo "<td align='center'>" . round($row["score"]) . " <font color='#28D308'>+" . round(getPointsChange($row["userid"], false)*$row["activity"]) . "</font></td>";
-                            echo "<td align='center'>" . $row["posts"] . " " . getPostChange($row["userid"]) . "</td>";
-                            echo "<td align='center'>" . $row["reputation"] . " " . getRepChange($row["userid"]) . "</td>";
+                            echo "<td align='center'>" . round($row["score"]) . " " . stylize("point", fetchLeaderboardsCacheValue($row["userid"], "point_change")) . "</td>";
+                            echo "<td align='center'>" . $row["posts"] . " " . stylize("post", fetchLeaderboardsCacheValue($row["userid"], "post_change")) . "</td>";
+                            echo "<td align='center'>" . $row["reputation"] . " " . stylize("rep", fetchLeaderboardsCacheValue($row["userid"], "rep_change")) . "</td>";
                             echo "<td align='center'>" . round($row["activity"]*100, 2) . "%</td>";
                             echo "<td align='center'><a href='sig.php?theme=light&user=" . $row["username"] . "'><button type='button' class='btn btn-success'>Get Sig!</button></a></td>";
                             echo "</tr>";

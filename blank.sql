@@ -100,3 +100,18 @@ CREATE TABLE IF NOT EXISTS `cache` (
   `points` double NOT NULL,
   UNIQUE KEY `day` (`day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `leaderboards_cache`
+--
+
+CREATE TABLE IF NOT EXISTS `leaderboards_cache` (
+  `userid` int(6) NOT NULL,
+  `rank_change` int(3) NOT NULL,
+  `point_change` int(3) NOT NULL,
+  `post_change` int(2) NOT NULL,
+  `rep_change` int(2) NOT NULL,
+  UNIQUE KEY `userid` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

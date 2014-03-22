@@ -416,7 +416,7 @@ function getHistory($userid, $results = 5) {
 }
 
 // Return rank change of history vs current
-function getRankChange($userid) {
+function getRankChange($userid, $num = false) {
     $history = getHistory($userid, 1); 
     if (getUpdateDate() == "stats are currently being updated...") {
         return "--";
@@ -433,20 +433,32 @@ function getRankChange($userid) {
     if ($current < $past || $past == 0) {
         // They just joined the list
         if ($past == 0) {
+            if ($num) {
+                return (totalUsers()-$current);
+            }
             return "<img src='images/green_up_arrow.png'>" . (totalUsers()-$current);
+        }
+        if ($num) {
+            return ($past-$current);
         }
         return "<img src='images/green_up_arrow.png'>" . ($past-$current);
     }
     // Rank went down
     else if ($current > $past) {
+        if ($num) {
+            return -($current-$past);
+        }
         return "<img src='images/red_down_arrow.png'>" . ($current-$past);
     } else {
+        if ($num) {
+            return 0;
+        }
         return "--";
     }
 }
 
 // Return post change of history vs current
-function getPostChange($userid) {
+function getPostChange($userid, $sign = true) {
     $history = getHistory($userid, 1); 
     if (getUpdateDate() == "stats are currently being updated...") {
         return "";
@@ -458,12 +470,15 @@ function getPostChange($userid) {
 
     $past = $history[0]['posts'];
     if ($past != 0) {
-        return "<font color='#28D308'>+" . $past;
+        if ($sign == true) {
+            return "<font color='#28D308'>+" . $past . "</font>";
+        }
+        return $past;
     }
 }
 
 // Return rep change of history vs current
-function getRepChange($userid) {
+function getRepChange($userid, $sign = true) {
     $history = getHistory($userid, 1); 
     if (getUpdateDate() == "stats are currently being updated...") {
         return "";
@@ -475,7 +490,10 @@ function getRepChange($userid) {
 
     $past = $history[0]['reputation'];
     if ($past != 0) {
-        return "<font color='#28D308'>+" . $past;
+        if ($sign == true) {
+            return "<font color='#28D308'>+" . $past . "</font>";
+        }
+        return $past;
     }
 }
 
@@ -493,7 +511,7 @@ function getPointsChange($userid, $sign = true) {
     $past = $history[0]['points'];
     if ($past != 0) {
         if ($sign == true) {
-            return "<font color='#28D308'>+" . $past;
+            return "<font color='#28D308'>+" . $past . "</font>";
         }
         return $past;
     }
@@ -746,6 +764,18 @@ function avgStats($data) {
     return array_avg($split);
 }
 
+function doesExist($table, $fieldname, $value) {
+    $db = database();
+    $statement = $db->prepare("SELECT * FROM $table WHERE $fieldname = ?");
+    $statement->execute(array($value));
+    $info = $statement->FetchObject();
+    if ($info != null) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 function updateCache() {
     for ($i = 30; $i > 0; $i--) {
         updateCacheValue($i, "posts", totalXDaysAgo("posts", $i));
@@ -784,5 +814,53 @@ function fetchCached($field) {
     }
 
     return substr($str, 0, -2) . "]";
+}
+
+function updateLeaderboardsCache() {
+    $db = database();
+    $statement = $db->query("SELECT * FROM `total` ORDER BY `rank` ASC");
+    while ($row = $statement->fetch()) {
+        updateLeaderboardsCacheValue($row["userid"], "rank_change", getRankChange($row["userid"], true));
+        updateLeaderboardsCacheValue($row["userid"], "point_change", round(getPointsChange($row["userid"], false)*$row["activity"]));
+        updateLeaderboardsCacheValue($row["userid"], "post_change", (int)getPostChange($row["userid"], false));
+        updateLeaderboardsCacheValue($row["userid"], "rep_change", (int)getRepChange($row["userid"], false));
+    }
+}
+
+function updateLeaderboardsCacheValue($userid, $field, $value) {
+    $db = database();
+    if (doesExist("leaderboards_cache", "userid", $userid)) {
+        $statement = $db->prepare("UPDATE `leaderboards_cache` SET $field = ? WHERE `userid` = ?;");
+        $statement->execute(array($value, $userid));
+    } else {
+        $statement = $db->prepare("INSERT INTO `leaderboards_cache` (`userid`, `$field`) VALUES (?,?)");
+        $statement->execute(array($userid, $value));
+    }
+}
+
+function fetchLeaderboardsCacheValue($userid, $field) {
+    $db = database();
+    $statement = $db->prepare("SELECT $field FROM `leaderboards_cache` WHERE `userid` = ?");
+    $statement->execute(array($userid));
+    $info = $statement->fetchObject();
+    return $info->$field;
+}
+
+function stylize($type, $value) {
+    if ($type == "rank") {
+        if ($value < 0) {
+            return "<img src='images/red_down_arrow.png'>" . -$value;
+        } else if ($value > 0) {
+            return "<img src='images/green_up_arrow.png'>" . $value;
+        } else {
+            return "--";
+        }
+    } else {
+        if ($value > 0) {
+            return "<font color='#28D308'>+" . $value . "</font>";
+        } else {
+            return "";
+        }
+    }
 }
 ?>
