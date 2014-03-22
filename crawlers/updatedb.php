@@ -108,8 +108,11 @@ updateHistoryRanks();
 echo "Updating Current Rankings...\n";
 updateRanks();
 
-echo "Updating Last 30 Day Stats Cache...\n";
+echo "Caching Last 30 Day Stats...\n";
 updateCache();
+
+echo "Caching Leaderboards Stats...\n";
+updateLeaderboardsCache();
 
 echo "A total of " . ((($a)*20)-$old) . " members stats were updated in " . round($eta_new-$eta_start) . " seconds.\n";
 ?>
