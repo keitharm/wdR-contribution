@@ -15,26 +15,36 @@ function database() {
 }
 
 function extractData($data, $search, $ending, $specific = -1) {
+    $len = strlen($data);
     $matches = findall($search, $data);
-    foreach ($matches as &$val) {
+    $found = array();
+    foreach ($matches as $val) {
+        $bad = false;
         $offset = 0;
         $val += strlen($search);
         while (substr($data, $val+$offset, strlen($ending)) != $ending) {
             $offset++;
+            // If we are outside of the range of the string, there is no ending match.
+            if ($offset > $len) {
+                $bad = true;
+                break;
+            }
         }
-        $val = substr($data, $val, $offset);
+        if (!$bad) {
+            $found[] = substr($data, $val, $offset);
+        }
     }
-    if ($matches == false) {
-        return "Error, no matches found.";
+    if ($found == false) {
+        return false;
     }
 
     if ($specific == -1) {
-        if (count($matches) == 1) {
-            return $matches[0];
+        if (count($found) == 1) {
+            return $found[0];
         }
-        return $matches;
+        return $found;
     }
-    return $matches[$specific-1];
+    return $found[$specific-1];
 }
 
 // Updated function that finds all occurances of needle
